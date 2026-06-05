@@ -1,6 +1,43 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+
+// Auto-copy generated image assets to images/ on local startup
+function copyGeneratedImages() {
+  const srcDirName = 'C:\\Users\\manis\\.gemini\\antigravity-ide\\brain\\5925e834-af4c-4082-a027-7ebb03c44bdc';
+  const destDir = path.join(__dirname, 'images');
+
+  const filesMap = {
+    'hero_bg_1780676676115.png': 'hero_bg.png',
+    'facility_1780676696581.png': 'facility.png',
+    'mission_1780676713977.png': 'mission.png',
+    'accreditations_1780676730135.png': 'accreditations.png',
+    'emergency_1780676747437.png': 'emergency.png',
+    'cardiology_1780676764241.png': 'cardiology.png',
+    'pediatrics_1780676781600.png': 'pediatrics.png',
+    'dr_sarah_1780676796805.png': 'dr_sarah.png',
+    'dr_michael_1780676813299.png': 'dr_michael.png',
+    'dr_priya_1780676830737.png': 'dr_priya.png',
+    'dr_robert_1780676844866.png': 'dr_robert.png'
+  };
+
+  try {
+    if (!fs.existsSync(destDir)) {
+      fs.mkdirSync(destDir, { recursive: true });
+    }
+    Object.entries(filesMap).forEach(([srcName, destName]) => {
+      const srcPath = path.join(srcDirName, srcName);
+      const destPath = path.join(destDir, destName);
+      if (fs.existsSync(srcPath)) {
+        fs.copyFileSync(srcPath, destPath);
+        console.log(`Copied image asset: ${destName}`);
+      }
+    });
+  } catch (err) {
+    // Fail silently in cloud environments
+  }
+}
+copyGeneratedImages();
 const db = require('./database');
 
 const PORT = process.env.PORT || 3000;

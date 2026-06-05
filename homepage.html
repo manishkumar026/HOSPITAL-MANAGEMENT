@@ -9,19 +9,44 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         
         :root {
-            --primary: #4f46e5; /* Indigo */
-            --primary-hover: #4338ca;
-            --secondary: #0f172a; /* Slate Dark */
-            --accent: #f59e0b; /* Amber */
-            --light: #f8fafc;
-            --dark: #0f172a;
-            --gray: #e2e8f0;
-            --success: #10b981; /* Emerald */
-            --danger: #ef4444; /* Red */
-            --border-radius: 16px;
+            --primary: hsl(243, 75%, 59%); /* Premium Indigo */
+            --primary-light: hsl(243, 85%, 68%);
+            --primary-hover: hsl(243, 75%, 49%);
+            --secondary: hsl(222, 47%, 11%); /* Slate Deep Dark */
+            --accent: hsl(38, 92%, 50%); /* Amber Gold */
+            --light: hsl(210, 40%, 98%);
+            --dark: hsl(222, 47%, 11%);
+            --gray: hsl(214, 32%, 91%);
+            --success: hsl(160, 84%, 39%);
+            --danger: hsl(0, 84%, 60%);
+            --border-radius: 20px;
             --font-main: 'Plus Jakarta Sans', sans-serif;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            /* Glassmorphism Tokens */
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-bg-hover: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-border-hover: rgba(79, 70, 229, 0.2);
+            
+            /* Shadows for 3D depth */
+            --shadow-3d: 0 15px 35px -5px rgba(15, 23, 42, 0.05), 0 10px 15px -10px rgba(15, 23, 42, 0.05);
+            --shadow-3d-hover: 0 35px 60px -15px rgba(79, 70, 229, 0.15), 0 20px 30px -20px rgba(79, 70, 229, 0.08);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--light);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: hsl(243, 30%, 80%);
+            border-radius: 10px;
+            border: 2px solid var(--light);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
         }
 
         /* Global Styles */
@@ -35,8 +60,12 @@
         
         body {
             line-height: 1.6;
-            color: #334155;
+            color: hsl(215, 25%, 27%);
             background-color: var(--light);
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(243, 75%, 95%, 0.3) 0, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(190, 80%, 95%, 0.3) 0, transparent 50%);
         }
         
         .container {
@@ -45,6 +74,7 @@
             margin: 0 auto;
         }
         
+        /* Modern 3D/Lift Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -52,103 +82,103 @@
             gap: 8px;
             background-color: var(--primary);
             color: white;
-            padding: 12px 28px;
-            border-radius: 8px;
+            padding: 14px 30px;
+            border-radius: 12px;
             text-decoration: none;
             font-weight: 700;
-            transition: all 0.25s ease;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             border: none;
             cursor: pointer;
-            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+            box-shadow: 0 6px 12px -2px hsla(243, 75%, 59%, 0.25);
             font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            z-index: -1;
+            transition: transform 0.5s ease;
         }
         
         .btn:hover {
             background-color: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 20px -4px hsla(243, 75%, 59%, 0.4);
         }
 
+        .btn:hover::after {
+            transform: translateX(100%);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
         .btn-secondary {
             background-color: var(--secondary);
-            box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.2);
+            box-shadow: 0 6px 12px -2px rgba(15, 23, 42, 0.25);
         }
 
         .btn-secondary:hover {
-            background-color: #1e293b;
-            box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.3);
+            background-color: hsl(222, 47%, 18%);
+            box-shadow: 0 12px 20px -4px rgba(15, 23, 42, 0.45);
         }
 
         .btn-danger {
             background-color: var(--danger);
-            box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2);
+            box-shadow: 0 6px 12px -2px hsla(0, 84%, 60%, 0.25);
         }
 
         .btn-danger:hover {
-            background-color: #dc2626;
-            box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3);
+            background-color: hsl(0, 84%, 50%);
+            box-shadow: 0 12px 20px -4px hsla(0, 84%, 60%, 0.45);
         }
         
         h2 {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 800;
             margin-bottom: 1.25rem;
             color: var(--secondary);
             text-align: center;
             letter-spacing: -0.03em;
+            background: linear-gradient(135deg, var(--secondary) 30%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .section-desc {
             text-align: center;
-            color: #64748b;
+            color: hsl(215, 15%, 50%);
             max-width: 600px;
-            margin: 0 auto 40px;
-            font-size: 1.05rem;
+            margin: 0 auto 50px;
+            font-size: 1.1rem;
         }
         
         section {
-            padding: 80px 0;
+            padding: 90px 0;
+            position: relative;
         }
         
-        /* Top Banner */
-        .top-banner {
-            background-color: var(--secondary);
-            color: white;
-            padding: 10px 0;
-            font-size: 0.85rem;
-        }
-
-        .top-banner-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .top-banner-left {
-            display: flex;
-            gap: 20px;
-        }
-
-        .top-banner-left span {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: #cbd5e1;
-        }
-
-        .top-banner-left i {
-            color: var(--accent);
-        }
-
-        /* Header Styles */
+        /* Glass Header with Backdrop Blur */
         header {
-            background-color: white;
-            padding: 1.25rem 0;
-            border-bottom: 1px solid var(--gray);
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
         }
         
         .header-top {
@@ -168,6 +198,7 @@
             font-size: 2.2rem;
             color: var(--primary);
             margin-right: 12px;
+            filter: drop-shadow(0 4px 6px hsla(243, 75%, 59%, 0.2));
         }
         
         .logo-text h1 {
@@ -180,10 +211,10 @@
         
         .logo-text p {
             font-size: 0.78rem;
-            color: #64748b;
+            color: hsl(215, 15%, 50%);
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            font-weight: 600;
+            font-weight: 700;
             margin-top: 2px;
         }
         
@@ -197,26 +228,26 @@
         nav ul {
             display: flex;
             list-style: none;
-            gap: 10px;
+            gap: 5px;
             align-items: center;
         }
         
         nav ul li a {
-            color: #475569;
+            color: hsl(215, 25%, 35%);
             text-decoration: none;
             font-weight: 600;
-            padding: 8px 16px;
-            border-radius: 6px;
-            transition: all 0.2s;
+            padding: 10px 18px;
+            border-radius: 10px;
+            transition: all 0.25s ease;
             font-size: 0.92rem;
         }
         
         nav ul li a:hover {
             color: var(--primary);
-            background-color: #f1f5f9;
+            background-color: hsla(243, 75%, 59%, 0.08);
         }
         
-        /* Action Buttons */
+        /* Header Action Buttons */
         .header-actions {
             display: flex;
             align-items: center;
@@ -226,166 +257,199 @@
         .emergency-btn {
             background-color: var(--danger);
             color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
+            padding: 11px 22px;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: 700;
-            transition: all 0.25s;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.15);
+            box-shadow: 0 4px 10px -2px hsla(0, 84%, 60%, 0.2);
             font-size: 0.9rem;
         }
         
         .emergency-btn:hover {
-            background-color: #dc2626;
-            transform: translateY(-1px);
+            background-color: hsl(0, 84%, 50%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px -4px hsla(0, 84%, 60%, 0.35);
         }
         
         .login-btn {
             background-color: var(--primary);
             color: white;
-            padding: 10px 22px;
-            border-radius: 6px;
+            padding: 11px 24px;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: 700;
-            transition: all 0.25s;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 6px;
-            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.15);
+            gap: 8px;
+            box-shadow: 0 4px 10px -2px hsla(243, 75%, 59%, 0.2);
             font-size: 0.9rem;
         }
         
         .login-btn:hover {
             background-color: var(--primary-hover);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px -4px hsla(243, 75%, 59%, 0.35);
         }
         
-        /* Hero Section */
+        /* Hero Section with Interactive Parallax Feel */
         .hero {
-            background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(79, 70, 229, 0.7) 100%),
-                              url('https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(79, 70, 229, 0.72) 100%),
+                              url('images/hero_bg.png');
             background-size: cover;
             background-position: center;
-            min-height: 520px;
+            min-height: 560px;
             display: flex;
             align-items: center;
             color: white;
-            padding: 60px 0;
+            padding: 80px 0;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to top, var(--light), transparent);
+            pointer-events: none;
         }
         
         .hero-content {
-            max-width: 650px;
+            max-width: 680px;
         }
         
         .hero h2 {
-            font-size: 3.2rem;
-            margin-bottom: 20px;
+            font-size: 3.5rem;
+            margin-bottom: 24px;
             color: white;
             font-weight: 800;
             line-height: 1.15;
             letter-spacing: -0.04em;
             text-align: left;
+            background: linear-gradient(120deg, #ffffff 50%, hsl(190, 80%, 80%) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         .hero p {
-            font-size: 1.15rem;
-            margin-bottom: 35px;
-            color: #e2e8f0;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            color: hsl(210, 20%, 88%);
             line-height: 1.6;
         }
 
         .hero .btn {
-            padding: 14px 32px;
-            font-size: 1rem;
+            padding: 16px 36px;
+            font-size: 1.05rem;
             background-color: var(--accent);
             color: var(--secondary);
-            box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.25);
+            box-shadow: 0 6px 15px -3px rgba(245, 158, 11, 0.35);
         }
 
         .hero .btn:hover {
-            background-color: #d97706;
-            box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.35);
+            background-color: hsl(38, 92%, 40%);
+            box-shadow: 0 12px 25px -5px rgba(245, 158, 11, 0.5);
         }
         
-        /* Quick Links */
+        /* 3D Transform and Perspective settings for Cards */
+        .links-grid, .about-grid, .services-grid, .doctors-grid, .testimonial-grid, .contact-grid {
+            perspective: 1200px;
+        }
+
+        /* 3D Tilt Card Base styling */
+        .tilt-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-3d);
+            transition: transform 0.15s ease-out, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+            transform-style: preserve-3d;
+            overflow: hidden;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .tilt-card:hover {
+            background-color: var(--glass-bg-hover);
+            box-shadow: var(--shadow-3d-hover);
+            border-color: var(--glass-border-hover);
+        }
+
+        /* Internal card offset to give 3D floating effect */
+        .tilt-card > * {
+            transform: translateZ(28px);
+        }
+
+        /* Quick Links Cards */
         .quick-links {
-            background-color: white;
-            padding: 60px 0;
-            border-bottom: 1px solid var(--gray);
+            padding: 100px 0;
         }
         
         .links-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+            gap: 30px;
         }
         
         .link-card {
-            background-color: var(--light);
-            padding: 35px 30px;
-            border-radius: var(--border-radius);
+            padding: 45px 35px;
             text-align: center;
-            border: 1px solid rgba(0,0,0,0.02);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         
-        .link-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-lg);
-            background-color: white;
-            border-color: rgba(79, 70, 229, 0.1);
-        }
-        
         .link-card i {
             font-size: 2.2rem;
             color: var(--primary);
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             background-color: white;
-            width: 70px;
-            height: 70px;
+            width: 76px;
+            height: 76px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s;
+            box-shadow: var(--shadow-3d);
+            transition: all 0.3s ease;
         }
 
         .link-card:hover i {
-            transform: scale(1.1);
-            background-color: #eef2ff;
+            background-color: hsla(243, 75%, 59%, 0.1);
+            transform: scale(1.1) translateZ(10px);
         }
         
         .link-card h3 {
             margin-bottom: 12px;
             color: var(--secondary);
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             font-weight: 700;
         }
         
         .link-card p {
-            margin-bottom: 25px;
-            font-size: 0.92rem;
-            color: #64748b;
-            line-height: 1.5;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            color: hsl(215, 15%, 45%);
+            line-height: 1.55;
             flex-grow: 1;
         }
         
         .link-card .btn {
-            padding: 10px 24px;
-            font-size: 0.88rem;
+            padding: 11px 26px;
+            font-size: 0.9rem;
             width: 100%;
         }
         
-        /* About Us */
+        /* About Us Section with 3D Image frames */
         .about {
-            background-color: var(--light);
+            background-color: hsl(210, 40%, 96.5%);
         }
         
         .about-grid {
@@ -395,28 +459,28 @@
         }
         
         .about-card {
-            background-color: white;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(0, 0, 0, 0.02);
-            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
 
-        .about-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-lg);
-        }
-        
         .about-card img {
             width: 100%;
             height: 220px;
             object-fit: cover;
+            border-bottom: 1px solid var(--glass-border);
+            transition: transform 0.3s ease;
+        }
+
+        .about-card:hover img {
+            transform: scale(1.03);
         }
         
         .about-content {
             padding: 30px 25px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
         }
         
         .about-content h3 {
@@ -427,27 +491,31 @@
         }
 
         .about-content p {
-            color: #64748b;
+            color: hsl(215, 15%, 45%);
             font-size: 0.92rem;
-            line-height: 1.5;
-            margin-bottom: 20px;
+            line-height: 1.55;
+            margin-bottom: 25px;
+            flex-grow: 1;
         }
 
         .about-content .btn {
             background-color: transparent;
             color: var(--primary);
-            border: 1px solid var(--gray);
+            border: 1.5px solid var(--gray);
             box-shadow: none;
-            padding: 8px 20px;
+            padding: 9px 22px;
             font-size: 0.88rem;
+            margin-top: auto;
         }
 
         .about-content .btn:hover {
-            background-color: #f8fafc;
+            background-color: var(--primary);
+            color: white;
             border-color: var(--primary);
+            box-shadow: 0 6px 12px -2px hsla(243, 75%, 59%, 0.2);
         }
         
-        /* Services */
+        /* Medical Services/Departments Card styles */
         .services {
             background-color: white;
         }
@@ -459,42 +527,42 @@
         }
         
         .service-card {
-            background-color: var(--light);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.02);
-            transition: all 0.3s ease;
-        }
-        
-        .service-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-lg);
-            background-color: white;
-            border-color: rgba(79, 70, 229, 0.1);
+            display: flex;
+            flex-direction: column;
         }
         
         .service-card img {
             width: 100%;
             height: 220px;
             object-fit: cover;
+            border-bottom: 1px solid var(--glass-border);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover img {
+            transform: scale(1.03);
         }
         
         .service-content {
             padding: 30px 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
         }
         
         .service-content h3 {
             margin-bottom: 12px;
             color: var(--secondary);
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             font-weight: 700;
         }
 
         .service-content p {
-            color: #64748b;
+            color: hsl(215, 15%, 45%);
             font-size: 0.92rem;
-            line-height: 1.5;
-            margin-bottom: 20px;
+            line-height: 1.55;
+            margin-bottom: 25px;
+            flex-grow: 1;
         }
         
         .service-content a {
@@ -505,7 +573,8 @@
             align-items: center;
             gap: 6px;
             font-size: 0.92rem;
-            transition: gap 0.2s;
+            transition: gap 0.25s ease;
+            margin-top: auto;
         }
         
         .service-content a:hover {
@@ -513,40 +582,39 @@
             gap: 10px;
         }
         
-        /* Doctors */
+        /* Doctors profiles (Grid details) */
         .doctors {
-            background-color: var(--light);
+            background-color: hsl(210, 40%, 96.5%);
         }
         
         .doctors-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
+            gap: 25px;
         }
         
         .doctor-card {
-            background-color: white;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(0, 0, 0, 0.02);
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        
-        .doctor-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
         }
         
         .doctor-card img {
             width: 100%;
             height: 260px;
             object-fit: cover;
+            border-bottom: 1px solid var(--glass-border);
+            transition: transform 0.3s ease;
+        }
+
+        .doctor-card:hover img {
+            transform: scale(1.02);
         }
         
         .doctor-info {
             padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
         }
         
         .doctor-info h3 {
@@ -557,27 +625,38 @@
         }
         
         .doctor-info p {
-            color: #64748b;
+            color: hsl(215, 15%, 50%);
             font-size: 0.88rem;
             margin-bottom: 15px;
         }
 
+        .doctor-info p.specialty {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
         .doctor-info .btn {
-            padding: 8px 16px;
+            padding: 9px 18px;
             font-size: 0.82rem;
             background-color: transparent;
             color: var(--primary);
-            border: 1px solid var(--gray);
+            border: 1.5px solid var(--gray);
             box-shadow: none;
             width: 100%;
+            margin-top: auto;
         }
 
         .doctor-info .btn:hover {
-            background-color: #f8fafc;
+            background-color: var(--primary);
+            color: white;
             border-color: var(--primary);
         }
         
-        /* Testimonials */
+        /* Testimonials cards (Tilt + Depth) */
         .testimonials {
             background-color: white;
         }
@@ -589,35 +668,38 @@
         }
         
         .testimonial-card {
-            background-color: var(--light);
-            padding: 35px;
-            border-radius: var(--border-radius);
-            border: 1px solid rgba(0,0,0,0.02);
-            transition: all 0.3s ease;
+            padding: 40px 35px;
             display: flex;
             flex-direction: column;
-        }
-
-        .testimonial-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-            background-color: white;
-            border-color: rgba(79, 70, 229, 0.1);
         }
         
         .testimonial-card p {
             font-style: italic;
             margin-bottom: 25px;
-            font-size: 0.98rem;
+            font-size: 1rem;
             line-height: 1.6;
-            color: #475569;
+            color: hsl(215, 20%, 35%);
             flex-grow: 1;
+            position: relative;
+        }
+
+        .testimonial-card p::before {
+            content: '\201C';
+            font-family: Georgia, serif;
+            font-size: 3rem;
+            position: absolute;
+            top: -20px;
+            left: -15px;
+            color: hsla(243, 75%, 59%, 0.12);
+            line-height: 1;
         }
         
         .patient-info {
             display: flex;
             align-items: center;
             gap: 15px;
+            border-top: 1px solid var(--gray);
+            padding-top: 15px;
         }
         
         .patient-details h4 {
@@ -628,9 +710,13 @@
 
         .patient-details p {
             font-size: 0.82rem;
-            color: #64748b;
+            color: hsl(215, 15%, 50%);
             margin-bottom: 0;
             font-style: normal;
+        }
+
+        .patient-details p::before {
+            content: none;
         }
         
         .rating {
@@ -639,9 +725,9 @@
             margin-top: 4px;
         }
         
-        /* Contact Section */
+        /* Contact Cards (Tilt and Modern Styling) */
         .contact {
-            background-color: var(--light);
+            background-color: hsl(210, 40%, 96.5%);
         }
         
         .contact-grid {
@@ -651,34 +737,31 @@
         }
         
         .contact-card {
-            background-color: white;
-            padding: 40px 30px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(0,0,0,0.02);
+            padding: 45px 30px;
             text-align: center;
-            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-
-        .contact-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
         }
         
         .contact-card i {
             font-size: 2rem;
             color: var(--primary);
-            margin-bottom: 20px;
-            background-color: #eef2ff;
-            width: 60px;
-            height: 60px;
+            margin-bottom: 25px;
+            background-color: hsla(243, 75%, 59%, 0.08);
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover i {
+            background-color: var(--primary);
+            color: white;
+            transform: scale(1.1) rotate(10deg);
         }
         
         .contact-card h3 {
@@ -690,9 +773,9 @@
 
         .contact-card p {
             font-size: 0.92rem;
-            color: #64748b;
+            color: hsl(215, 15%, 45%);
             line-height: 1.6;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             flex-grow: 1;
         }
 
@@ -704,24 +787,25 @@
         footer {
             background-color: var(--secondary);
             color: white;
-            padding: 70px 0 30px;
+            padding: 80px 0 30px;
+            position: relative;
         }
         
         .footer-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 40px;
-            margin-bottom: 50px;
+            margin-bottom: 60px;
         }
         
         .footer-column h3 {
             margin-bottom: 22px;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 700;
             letter-spacing: 0.02em;
             color: white;
             border-left: 3px solid var(--primary);
-            padding-left: 10px;
+            padding-left: 12px;
         }
         
         .footer-column ul {
@@ -729,47 +813,48 @@
         }
         
         .footer-column ul li {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
         
         .footer-column ul li a {
-            color: #cbd5e1;
+            color: hsl(215, 25%, 75%);
             text-decoration: none;
-            transition: color 0.2s;
+            transition: all 0.2s ease;
             font-size: 0.9rem;
         }
         
         .footer-column ul li a:hover {
             color: white;
+            padding-left: 5px;
         }
         
         .contact-info p {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             display: flex;
             align-items: flex-start;
-            gap: 10px;
+            gap: 12px;
             font-size: 0.9rem;
-            color: #cbd5e1;
+            color: hsl(215, 25%, 75%);
         }
         
         .contact-info i {
-            color: var(--primary);
+            color: var(--primary-light);
             margin-top: 4px;
         }
         
         .social-links {
-            margin-top: 25px;
+            margin-top: 30px;
             display: flex;
             gap: 15px;
         }
         
         .social-links a {
-            color: #cbd5e1;
-            font-size: 1.25rem;
-            transition: all 0.25s;
+            color: hsl(215, 25%, 75%);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
             background-color: rgba(255,255,255,0.05);
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -779,7 +864,7 @@
         .social-links a:hover {
             color: white;
             background-color: var(--primary);
-            transform: translateY(-2px);
+            transform: translateY(-4px) rotate(360deg);
         }
         
         .copyright {
@@ -787,13 +872,13 @@
             padding-top: 30px;
             border-top: 1px solid rgba(255,255,255,0.08);
             font-size: 0.88rem;
-            color: #94a3b8;
+            color: hsl(215, 15%, 60%);
         }
         
         .copyright a {
-            color: #cbd5e1;
+            color: hsl(215, 25%, 75%);
             text-decoration: none;
-            margin: 0 10px;
+            margin: 0 12px;
         }
         
         .copyright a:hover {
@@ -801,7 +886,19 @@
             text-decoration: underline;
         }
         
-        /* Responsive Design */
+        /* 3D Entry Animation classes */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(40px) translateZ(-50px);
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        
+        .fade-in-up.active {
+            opacity: 1;
+            transform: translateY(0) translateZ(0);
+        }
+        
+        /* Responsive Overrides */
         @media (max-width: 1024px) {
             .links-grid, .doctors-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -810,7 +907,7 @@
                 grid-template-columns: 1fr;
                 max-width: 500px;
                 margin: 0 auto;
-                gap: 25px;
+                gap: 30px;
             }
             .footer-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -820,13 +917,13 @@
         @media (max-width: 768px) {
             .header-top {
                 flex-direction: column;
-                gap: 15px;
+                gap: 18px;
                 text-align: center;
             }
             .nav-container {
                 flex-direction: column;
                 width: 100%;
-                gap: 15px;
+                gap: 18px;
             }
             nav ul {
                 flex-wrap: wrap;
@@ -838,14 +935,14 @@
             }
             .hero {
                 text-align: center;
-                min-height: 450px;
+                min-height: 480px;
             }
             .hero h2 {
-                font-size: 2.3rem;
+                font-size: 2.5rem;
                 text-align: center;
             }
             .hero p {
-                font-size: 1rem;
+                font-size: 1.05rem;
             }
             .top-banner {
                 display: none;
@@ -932,20 +1029,20 @@
             <h2>Clinical Quick Access</h2>
             <p class="section-desc">Easily schedule consultations, discover our certified physicians, or reach hospital emergency assistance.</p>
             <div class="links-grid">
-                <div class="link-card">
+                <div class="link-card tilt-card fade-in-up">
                     <i class="fas fa-calendar-alt"></i>
                     <h3>Book Appointment</h3>
                     <p>Schedule your consulting slot with our medical specialists online in real-time.</p>
                     <button class="btn quick-book-btn">Schedule Now</button>
                 </div>
-                <div class="link-card">
+                <div class="link-card tilt-card fade-in-up">
                     <i class="fas fa-user-md"></i>
                     <h3>Find a Doctor</h3>
                     <p>Browse our complete directory of board-certified clinical practitioners.</p>
                     <a href="#doctors" class="btn btn-secondary">View Specialists</a>
                 </div>
-                <div class="link-card">
-                    <i class="fas fa- ambulance"></i>
+                <div class="link-card tilt-card fade-in-up">
+                    <i class="fas fa-ambulance"></i>
                     <h3>Emergency Center</h3>
                     <p>Get immediate advice, directions, and critical contacts for emergency services.</p>
                     <a href="emergency.html" class="btn btn-danger">Emergency Info</a>
@@ -960,24 +1057,24 @@
             <h2>About Santhéa Hospital</h2>
             <p class="section-desc">Establishing patient safety metrics, leading clinical research, and serving our community with honor since 1998.</p>
             <div class="about-grid">
-                <div class="about-card">
-                    <img src="https://thumbs.dreamstime.com/b/modern-hospital-ward-rows-advanced-medical-beds-bright-interior-clean-design-concept-healthcare-infrastructure-351506587.jpg" alt="Our Facility">
+                <div class="about-card tilt-card fade-in-up">
+                    <img src="images/facility.png" alt="Our Facility">
                     <div class="about-content">
                         <h3>Our Facility</h3>
                         <p>Fully equipped medical center with 300+ patient beds, state-of-the-art diagnostic imaging scans, and advanced clinical laboratories.</p>
                         <a href="#" class="btn">Virtual Tour</a>
                     </div>
                 </div>
-                <div class="about-card">
-                    <img src="https://www.buckshealthcare.nhs.uk/wp-content/uploads/2021/10/vision-mission-values.jpg" alt="Mission & Values">
+                <div class="about-card tilt-card fade-in-up">
+                    <img src="images/mission.png" alt="Mission & Values">
                     <div class="about-content">
                         <h3>Mission & Values</h3>
                         <p>To promote health, healing, and hope by providing ethical, evidence-based, compassionate care for all patient profiles.</p>
                         <a href="#" class="btn">Our Values</a>
                     </div>
                 </div>
-                <div class="about-card">
-                    <img src="https://photos.healthgrades.com/hospital-quality/generic/lg/PSAFE-166px.png" alt="Accreditations">
+                <div class="about-card tilt-card fade-in-up">
+                    <img src="images/accreditations.png" alt="Accreditations">
                     <div class="about-content">
                         <h3>Accreditations</h3>
                         <p>Internationally recognized by Joint Commission International (JCI) and recipient of multiple patient safety quality awards.</p>
@@ -994,24 +1091,24 @@
             <h2>Our Medical Departments</h2>
             <p class="section-desc">Providing specialized medical treatments led by board-certified clinical department heads.</p>
             <div class="services-grid">
-                <div class="service-card">
-                    <img src="https://e1.pxfuel.com/desktop-wallpaper/313/969/desktop-wallpaper-emergency-fire-alarms.jpg" alt="Emergency Service">
+                <div class="service-card tilt-card fade-in-up">
+                    <img src="images/emergency.png" alt="Emergency Service">
                     <div class="service-content">
                         <h3>Emergency Care</h3>
                         <p>24/7 immediate trauma services, rapid ambulance dispatch, and critical cardiac care support.</p>
                         <a href="emergency.html">Department Info <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
-                <div class="service-card">
-                    <img src="https://media.gettyimages.com/id/1530491709/photo/doctor-touching-heart-icon-for-treatment-and-healthcare-of-technology-digital-futuristic.jpg?s=612x612&w=0&k=20&c=bIaD3qePYF9-MpppoeYWJ0PRhOz0TalF-0P5JwP-LIg=" alt="Cardiology Service">
+                <div class="service-card tilt-card fade-in-up">
+                    <img src="images/cardiology.png" alt="Cardiology Service">
                     <div class="service-content">
                         <h3>Cardiology</h3>
                         <p>Comprehensive heart wellness checks, electrophysiology, echocardiograms, and bypass surgery recovery.</p>
                         <a href="#">Department Info <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
-                <div class="service-card">
-                    <img src="https://www.asterhospitals.in/sites/default/files/2022-10/Paediatrics%20%26%20Neonatology.png" alt="Pediatrics Service">
+                <div class="service-card tilt-card fade-in-up">
+                    <img src="images/pediatrics.png" alt="Pediatrics Service">
                     <div class="service-content">
                         <h3>Pediatrics</h3>
                         <p>Specialized treatment and neonatology services for children, babies, and teenagers in a warm environment.</p>
@@ -1028,39 +1125,39 @@
             <h2>Our Medical Specialists</h2>
             <p class="section-desc">Meet some of our expert clinicians committed to providing top-tier medical consultations.</p>
             <div class="doctors-grid">
-                <div class="doctor-card">
-                    <img src="https://myaocconnect.com/wp-content/uploads/AOC-Connect-Sandy-Emery-headshot.jpg" alt="Dr. Sarah Johnson">
+                <div class="doctor-card tilt-card fade-in-up">
+                    <img src="images/dr_sarah.png" alt="Dr. Sarah Johnson">
                     <div class="doctor-info">
+                        <p class="specialty">Cardiology Unit</p>
                         <h3>Dr. Sarah Johnson</h3>
-                        <p>Cardiologist</p>
-                        <p>MD, FACC • Cardiology</p>
+                        <p>MD, FACC • Senior Cardiologist</p>
                         <a href="#" class="btn">Profile Info</a>
                     </div>
                 </div>
-                <div class="doctor-card">
-                    <img src="https://th.bing.com/th/id/OIP.saY5csibW4F6hDMOwYcjtAHaFj?w=230&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="Dr. Michael Chen">
+                <div class="doctor-card tilt-card fade-in-up">
+                    <img src="images/dr_michael.png" alt="Dr. Michael Chen">
                     <div class="doctor-info">
+                        <p class="specialty">Neurology Ward</p>
                         <h3>Dr. Michael Chen</h3>
-                        <p>Neurologist</p>
-                        <p>MD, PhD • Neurology</p>
+                        <p>MD, PhD • Head of Neurology</p>
                         <a href="#" class="btn">Profile Info</a>
                     </div>
                 </div>
-                <div class="doctor-card">
-                    <img src="https://th.bing.com/th/id/OIP.kQQM0JyMfwUMsSkSyU3v2gHaHa?w=168&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="Dr. Priya Patel">
+                <div class="doctor-card tilt-card fade-in-up">
+                    <img src="images/dr_priya.png" alt="Dr. Priya Patel">
                     <div class="doctor-info">
+                        <p class="specialty">Pediatrics Wing</p>
                         <h3>Dr. Priya Patel</h3>
-                        <p>Pediatrician</p>
-                        <p>MD, FAAP • Pediatrics</p>
+                        <p>MD, FAAP • Chief Pediatrician</p>
                         <a href="#" class="btn">Profile Info</a>
                     </div>
                 </div>
-                <div class="doctor-card">
-                    <img src="https://doximity-res.cloudinary.com/images/f_auto,q_auto,t_profile_photo_320x320/leipfgnnq8ykyanlroaz/robert-williams-md-aurora-co.jpg" alt="Dr. Robert Williams">
+                <div class="doctor-card tilt-card fade-in-up">
+                    <img src="images/dr_robert.png" alt="Dr. Robert Williams">
                     <div class="doctor-info">
+                        <p class="specialty">Orthopedics Dept</p>
                         <h3>Dr. Robert Williams</h3>
-                        <p>Orthopedic Surgeon</p>
-                        <p>MD, FACS • Orthopedics</p>
+                        <p>MD, FACS • Lead Orthopedic Surgeon</p>
                         <a href="#" class="btn">Profile Info</a>
                     </div>
                 </div>
@@ -1074,7 +1171,7 @@
             <h2>Patient Testimonials</h2>
             <p class="section-desc">Read reviews from patients who received specialized treatment at our medical center.</p>
             <div class="testimonial-grid">
-                <div class="testimonial-card">
+                <div class="testimonial-card tilt-card fade-in-up">
                     <p>"The care I received at Santhéa was exceptional. The doctors took their time to listen, explain diagnoses clearly, and guide my cardiac recovery."</p>
                     <div class="patient-info">
                         <div class="patient-details">
@@ -1086,7 +1183,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="testimonial-card">
+                <div class="testimonial-card tilt-card fade-in-up">
                     <p>"From the moment I was admitted, I felt secure and well cared for. The emergency clinical nursing staff was incredibly supportive and patient."</p>
                     <div class="patient-info">
                         <div class="patient-details">
@@ -1098,7 +1195,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="testimonial-card">
+                <div class="testimonial-card tilt-card fade-in-up">
                     <p>"The pediatrics team was fantastic with my son during his surgery stay. They made him comfortable and explained every detail to us."</p>
                     <div class="patient-info">
                         <div class="patient-details">
@@ -1120,21 +1217,21 @@
             <h2>Contact Our Hospital</h2>
             <p class="section-desc">Reach us via our clinical help desks, email queries, or physical location map.</p>
             <div class="contact-grid">
-                <div class="contact-card">
+                <div class="contact-card tilt-card fade-in-up">
                     <i class="fas fa-map-marker-alt"></i>
                     <h3>Location</h3>
                     <p>123 Medical Drive<br>Healthville, HV 12345<br>United States</p>
                     <a href="#" class="btn btn-secondary">Get Directions</a>
                 </div>
-                <div class="contact-card">
+                <div class="contact-card tilt-card fade-in-up">
                     <i class="fas fa-phone-alt"></i>
                     <h3>Contact Information</h3>
-                    <p><strong>Main Clinic:</strong> (555) 123-4567<br>
+                    <p><strong>Main Helpdesk:</strong> (555) 123-4567<br>
                     <strong>Emergency Roster:</strong> 911<br>
                     <strong>Email Query:</strong> info@santheahospital.com</p>
                     <a href="contpagepatient.html" class="btn">Open Contact Form</a>
                 </div>
-                <div class="contact-card">
+                <div class="contact-card tilt-card fade-in-up">
                     <i class="fas fa-clock"></i>
                     <h3>Hours of Operation</h3>
                     <p><strong>Emergency Trauma:</strong> 24/7<br>
@@ -1230,6 +1327,47 @@
             btn.addEventListener('click', function() {
                 handleBookingRedirect();
             });
+        });
+
+        // 3D Tilt Card Effect JavaScript
+        document.querySelectorAll('.tilt-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left; // x position inside element
+                const y = e.clientY - rect.top;  // y position inside element
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Strength factor of 3D tilt (lower = more tilt)
+                const tiltX = -(y - centerY) / 12;
+                const tiltY = (x - centerX) / 12;
+                
+                card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.02, 1.02, 1.02) translateZ(10px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1) translateZ(0px)';
+            });
+        });
+
+        // Scroll Intersection Observer for Entrance Animations
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -40px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Trigger only once
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-up').forEach(el => {
+            observer.observe(el);
         });
     </script>
 </body>
