@@ -1,0 +1,62 @@
+{
+  "users": [
+    {
+      "id": "ADMIN_01",
+      "role": "admin",
+      "username": "admin",
+      "password": "admin123",
+      "firstName": "Admin",
+      "lastName": "User",
+      "email": "admin@medicare.com",
+      "phone": "123-456-7890"
+    },
+    {
+      "id": "DOC_CHEN",
+      "role": "doctor",
+      "username": "dr_chen",
+      "password": "doctor123",
+      "firstName": "Michael",
+      "lastName": "Chen",
+      "email": "m.chen@medicare.com",
+      "phone": "555-019-2831",
+      "department": "cardiology"
+    },
+    {
+      "id": "DOC_PATEL",
+      "role": "doctor",
+      "username": "dr_patel",
+      "password": "doctor123",
+      "firstName": "Priya",
+      "lastName": "Patel",
+      "email": "p.patel@medicare.com",
+      "phone": "555-019-2832",
+      "department": "pediatrics"
+    },
+    {
+      "id": "DOC_JOHNSON",
+      "role": "doctor",
+      "username": "dr_johnson",
+      "password": "doctor123",
+      "firstName": "Sarah",
+      "lastName": "Johnson",
+      "email": "s.johnson@medicare.com",
+      "phone": "555-019-2833",
+      "department": "cardiology"
+    },
+    {
+      "id": "DOC_WILLIAMS",
+      "role": "doctor",
+      "username": "dr_williams",
+      "password": "doctor123",
+      "firstName": "Robert",
+      "lastName": "Williams",
+      "email": "r.williams@medicare.com",
+      "phone": "555-019-2834",
+      "department": "orthopedics"
+    }
+  ],
+  "appointments": [],
+  "prescriptions": [],
+  "messages": [],
+  "records": []
+}

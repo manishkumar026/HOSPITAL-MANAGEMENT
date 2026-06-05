@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santhéa General Hospital - Compassionate Care, Advanced Medicine</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary: #4f46e5; /* Indigo */
+            --primary-hover: #4338ca;
+            --secondary: #0f172a; /* Slate Dark */
+            --accent: #f59e0b; /* Amber */
+            --light: #f8fafc;
+            --dark: #0f172a;
+            --gray: #e2e8f0;
+            --success: #10b981; /* Emerald */
+            --danger: #ef4444; /* Red */
+            --border-radius: 16px;
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-main);
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: #334155;
+            background-color: var(--light);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.25s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+            font-size: 0.95rem;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background-color: #1e293b;
+            box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.3);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+            box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3);
+        }
+        
+        h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 1.25rem;
+            color: var(--secondary);
+            text-align: center;
+            letter-spacing: -0.03em;
+        }
+
+        .section-desc {
+            text-align: center;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            font-size: 1.05rem;
+        }
+        
+        section {
+            padding: 80px 0;
+        }
+        
+        /* Top Banner */
+        .top-banner {
+            background-color: var(--secondary);
+            color: white;
+            padding: 10px 0;
+            font-size: 0.85rem;
+        }
+
+        .top-banner-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-banner-left {
+            display: flex;
+            gap: 20px;
+        }
+
+        .top-banner-left span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #cbd5e1;
+        }
+
+        .top-banner-left i {
+            color: var(--accent);
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid var(--gray);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .logo i {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-right: 12px;
+        }
+        
+        .logo-text h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--secondary);
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+        
+        .logo-text p {
+            font-size: 0.78rem;
+            color: #64748b;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        
+        /* Navigation */
+        .nav-container {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        nav ul li a {
+            color: #475569;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-size: 0.92rem;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary);
+            background-color: #f1f5f9;
+        }
+        
+        /* Action Buttons */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .emergency-btn {
+            background-color: var(--danger);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.15);
+            font-size: 0.9rem;
+        }
+        
+        .emergency-btn:hover {
+            background-color: #dc2626;
+            transform: translateY(-1px);
+        }
+        
+        .login-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.15);
+            font-size: 0.9rem;
+        }
+        
+        .login-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(79, 70, 229, 0.7) 100%),
+                              url('https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            min-height: 520px;
+            display: flex;
+            align-items: center;
+            color: white;
+            padding: 60px 0;
+        }
+        
+        .hero-content {
+            max-width: 650px;
+        }
+        
+        .hero h2 {
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+            color: white;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.04em;
+            text-align: left;
+        }
+        
+        .hero p {
+            font-size: 1.15rem;
+            margin-bottom: 35px;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .hero .btn {
+            padding: 14px 32px;
+            font-size: 1rem;
+            background-color: var(--accent);
+            color: var(--secondary);
+            box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.25);
+        }
+
+        .hero .btn:hover {
+            background-color: #d97706;
+            box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.35);
+        }
+        
+        /* Quick Links */
+        .quick-links {
+            background-color: white;
+            padding: 60px 0;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        
+        .link-card {
+            background-color: var(--light);
+            padding: 35px 30px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            border: 1px solid rgba(0,0,0,0.02);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .link-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            background-color: white;
+            border-color: rgba(79, 70, 229, 0.1);
+        }
+        
+        .link-card i {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            background-color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .link-card:hover i {
+            transform: scale(1.1);
+            background-color: #eef2ff;
+        }
+        
+        .link-card h3 {
+            margin-bottom: 12px;
+            color: var(--secondary);
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .link-card p {
+            margin-bottom: 25px;
+            font-size: 0.92rem;
+            color: #64748b;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+        
+        .link-card .btn {
+            padding: 10px 24px;
+            font-size: 0.88rem;
+            width: 100%;
+        }
+        
+        /* About Us */
+        .about {
+            background-color: var(--light);
+        }
+        
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .about-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+        }
+
+        .about-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .about-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+        
+        .about-content {
+            padding: 30px 25px;
+            text-align: center;
+        }
+        
+        .about-content h3 {
+            margin-bottom: 12px;
+            color: var(--secondary);
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .about-content p {
+            color: #64748b;
+            font-size: 0.92rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .about-content .btn {
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--gray);
+            box-shadow: none;
+            padding: 8px 20px;
+            font-size: 0.88rem;
+        }
+
+        .about-content .btn:hover {
+            background-color: #f8fafc;
+            border-color: var(--primary);
+        }
+        
+        /* Services */
+        .services {
+            background-color: white;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .service-card {
+            background-color: var(--light);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            background-color: white;
+            border-color: rgba(79, 70, 229, 0.1);
+        }
+        
+        .service-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+        
+        .service-content {
+            padding: 30px 25px;
+        }
+        
+        .service-content h3 {
+            margin-bottom: 12px;
+            color: var(--secondary);
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .service-content p {
+            color: #64748b;
+            font-size: 0.92rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .service-content a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.92rem;
+            transition: gap 0.2s;
+        }
+        
+        .service-content a:hover {
+            color: var(--primary-hover);
+            gap: 10px;
+        }
+        
+        /* Doctors */
+        .doctors {
+            background-color: var(--light);
+        }
+        
+        .doctors-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+        
+        .doctor-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .doctor-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .doctor-card img {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+        }
+        
+        .doctor-info {
+            padding: 25px 20px;
+        }
+        
+        .doctor-info h3 {
+            margin-bottom: 5px;
+            color: var(--secondary);
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+        
+        .doctor-info p {
+            color: #64748b;
+            font-size: 0.88rem;
+            margin-bottom: 15px;
+        }
+
+        .doctor-info .btn {
+            padding: 8px 16px;
+            font-size: 0.82rem;
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--gray);
+            box-shadow: none;
+            width: 100%;
+        }
+
+        .doctor-info .btn:hover {
+            background-color: #f8fafc;
+            border-color: var(--primary);
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            background-color: white;
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .testimonial-card {
+            background-color: var(--light);
+            padding: 35px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            background-color: white;
+            border-color: rgba(79, 70, 229, 0.1);
+        }
+        
+        .testimonial-card p {
+            font-style: italic;
+            margin-bottom: 25px;
+            font-size: 0.98rem;
+            line-height: 1.6;
+            color: #475569;
+            flex-grow: 1;
+        }
+        
+        .patient-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .patient-details h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .patient-details p {
+            font-size: 0.82rem;
+            color: #64748b;
+            margin-bottom: 0;
+            font-style: normal;
+        }
+        
+        .rating {
+            color: var(--accent);
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+        
+        /* Contact Section */
+        .contact {
+            background-color: var(--light);
+        }
+        
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .contact-card {
+            background-color: white;
+            padding: 40px 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.02);
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .contact-card i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            background-color: #eef2ff;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .contact-card h3 {
+            margin-bottom: 12px;
+            color: var(--secondary);
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .contact-card p {
+            font-size: 0.92rem;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+
+        .contact-card .btn {
+            width: 100%;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--secondary);
+            color: white;
+            padding: 70px 0 30px;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 22px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: white;
+            border-left: 3px solid var(--primary);
+            padding-left: 10px;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-column ul li a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .footer-column ul li a:hover {
+            color: white;
+        }
+        
+        .contact-info p {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+        
+        .contact-info i {
+            color: var(--primary);
+            margin-top: 4px;
+        }
+        
+        .social-links {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-links a {
+            color: #cbd5e1;
+            font-size: 1.25rem;
+            transition: all 0.25s;
+            background-color: rgba(255,255,255,0.05);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .social-links a:hover {
+            color: white;
+            background-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            font-size: 0.88rem;
+            color: #94a3b8;
+        }
+        
+        .copyright a {
+            color: #cbd5e1;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        
+        .copyright a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .links-grid, .doctors-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .about-grid, .services-grid, .testimonial-grid, .contact-grid {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+                margin: 0 auto;
+                gap: 25px;
+            }
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            .nav-container {
+                flex-direction: column;
+                width: 100%;
+                gap: 15px;
+            }
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .header-actions {
+                justify-content: center;
+                width: 100%;
+            }
+            .hero {
+                text-align: center;
+                min-height: 450px;
+            }
+            .hero h2 {
+                font-size: 2.3rem;
+                text-align: center;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .top-banner {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .links-grid, .doctors-grid, .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-actions {
+                flex-direction: column;
+            }
+            .emergency-btn, .login-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Banner Info -->
+    <div class="top-banner">
+        <div class="container top-banner-content">
+            <div class="top-banner-left">
+                <span><i class="fas fa-phone-alt"></i> Call Us: (555) 123-4567</span>
+                <span><i class="fas fa-map-marker-alt"></i> 123 Medical Drive, Healthville</span>
+            </div>
+            <div class="top-banner-right">
+                <span>Outpatient Hours: Mon-Fri 8:00 AM - 8:00 PM</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container header-top">
+            <a href="homepage.html" class="logo">
+                <i class="fas fa-hand-holding-medical"></i>
+                <div class="logo-text">
+                    <h1>Santhéa Hospital</h1>
+                    <p>Compassionate Care, Advanced Medicine</p>
+                </div>
+            </a>
+            
+            <div class="nav-container">
+                <nav>
+                    <ul>
+                        <li><a href="#Home">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#doctors">Doctors</a></li>
+                        <li><a href="#testimonials">Testimonials</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    <a href="emergency.html" class="emergency-btn">
+                        <i class="fas fa-ambulance"></i> Emergency
+                    </a>
+                    <a href="#" id="nav-action-btn" class="login-btn">
+                        <i class="fas fa-user-circle"></i> Portal Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero" id="Home">
+        <div class="container">
+            <div class="hero-content">
+                <h2>Your Health Is Our Absolute Priority</h2>
+                <p>Providing exceptional healthcare services with state-of-the-art medical installations, advanced technology, and compassionate clinical professionals dedicated to your recovery and well-being.</p>
+                <button id="hero-book-btn" class="btn"><i class="fas fa-calendar-check"></i> Book an Appointment</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Quick Links -->
+    <section class="quick-links">
+        <div class="container">
+            <h2>Clinical Quick Access</h2>
+            <p class="section-desc">Easily schedule consultations, discover our certified physicians, or reach hospital emergency assistance.</p>
+            <div class="links-grid">
+                <div class="link-card">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>Book Appointment</h3>
+                    <p>Schedule your consulting slot with our medical specialists online in real-time.</p>
+                    <button class="btn quick-book-btn">Schedule Now</button>
+                </div>
+                <div class="link-card">
+                    <i class="fas fa-user-md"></i>
+                    <h3>Find a Doctor</h3>
+                    <p>Browse our complete directory of board-certified clinical practitioners.</p>
+                    <a href="#doctors" class="btn btn-secondary">View Specialists</a>
+                </div>
+                <div class="link-card">
+                    <i class="fas fa- ambulance"></i>
+                    <h3>Emergency Center</h3>
+                    <p>Get immediate advice, directions, and critical contacts for emergency services.</p>
+                    <a href="emergency.html" class="btn btn-danger">Emergency Info</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- About Us -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2>About Santhéa Hospital</h2>
+            <p class="section-desc">Establishing patient safety metrics, leading clinical research, and serving our community with honor since 1998.</p>
+            <div class="about-grid">
+                <div class="about-card">
+                    <img src="https://thumbs.dreamstime.com/b/modern-hospital-ward-rows-advanced-medical-beds-bright-interior-clean-design-concept-healthcare-infrastructure-351506587.jpg" alt="Our Facility">
+                    <div class="about-content">
+                        <h3>Our Facility</h3>
+                        <p>Fully equipped medical center with 300+ patient beds, state-of-the-art diagnostic imaging scans, and advanced clinical laboratories.</p>
+                        <a href="#" class="btn">Virtual Tour</a>
+                    </div>
+                </div>
+                <div class="about-card">
+                    <img src="https://www.buckshealthcare.nhs.uk/wp-content/uploads/2021/10/vision-mission-values.jpg" alt="Mission & Values">
+                    <div class="about-content">
+                        <h3>Mission & Values</h3>
+                        <p>To promote health, healing, and hope by providing ethical, evidence-based, compassionate care for all patient profiles.</p>
+                        <a href="#" class="btn">Our Values</a>
+                    </div>
+                </div>
+                <div class="about-card">
+                    <img src="https://photos.healthgrades.com/hospital-quality/generic/lg/PSAFE-166px.png" alt="Accreditations">
+                    <div class="about-content">
+                        <h3>Accreditations</h3>
+                        <p>Internationally recognized by Joint Commission International (JCI) and recipient of multiple patient safety quality awards.</p>
+                        <a href="#" class="btn">Certificates</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Services -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2>Our Medical Departments</h2>
+            <p class="section-desc">Providing specialized medical treatments led by board-certified clinical department heads.</p>
+            <div class="services-grid">
+                <div class="service-card">
+                    <img src="https://e1.pxfuel.com/desktop-wallpaper/313/969/desktop-wallpaper-emergency-fire-alarms.jpg" alt="Emergency Service">
+                    <div class="service-content">
+                        <h3>Emergency Care</h3>
+                        <p>24/7 immediate trauma services, rapid ambulance dispatch, and critical cardiac care support.</p>
+                        <a href="emergency.html">Department Info <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <img src="https://media.gettyimages.com/id/1530491709/photo/doctor-touching-heart-icon-for-treatment-and-healthcare-of-technology-digital-futuristic.jpg?s=612x612&w=0&k=20&c=bIaD3qePYF9-MpppoeYWJ0PRhOz0TalF-0P5JwP-LIg=" alt="Cardiology Service">
+                    <div class="service-content">
+                        <h3>Cardiology</h3>
+                        <p>Comprehensive heart wellness checks, electrophysiology, echocardiograms, and bypass surgery recovery.</p>
+                        <a href="#">Department Info <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <img src="https://www.asterhospitals.in/sites/default/files/2022-10/Paediatrics%20%26%20Neonatology.png" alt="Pediatrics Service">
+                    <div class="service-content">
+                        <h3>Pediatrics</h3>
+                        <p>Specialized treatment and neonatology services for children, babies, and teenagers in a warm environment.</p>
+                        <a href="#">Department Info <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Doctors -->
+    <section id="doctors" class="doctors">
+        <div class="container">
+            <h2>Our Medical Specialists</h2>
+            <p class="section-desc">Meet some of our expert clinicians committed to providing top-tier medical consultations.</p>
+            <div class="doctors-grid">
+                <div class="doctor-card">
+                    <img src="https://myaocconnect.com/wp-content/uploads/AOC-Connect-Sandy-Emery-headshot.jpg" alt="Dr. Sarah Johnson">
+                    <div class="doctor-info">
+                        <h3>Dr. Sarah Johnson</h3>
+                        <p>Cardiologist</p>
+                        <p>MD, FACC • Cardiology</p>
+                        <a href="#" class="btn">Profile Info</a>
+                    </div>
+                </div>
+                <div class="doctor-card">
+                    <img src="https://th.bing.com/th/id/OIP.saY5csibW4F6hDMOwYcjtAHaFj?w=230&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="Dr. Michael Chen">
+                    <div class="doctor-info">
+                        <h3>Dr. Michael Chen</h3>
+                        <p>Neurologist</p>
+                        <p>MD, PhD • Neurology</p>
+                        <a href="#" class="btn">Profile Info</a>
+                    </div>
+                </div>
+                <div class="doctor-card">
+                    <img src="https://th.bing.com/th/id/OIP.kQQM0JyMfwUMsSkSyU3v2gHaHa?w=168&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="Dr. Priya Patel">
+                    <div class="doctor-info">
+                        <h3>Dr. Priya Patel</h3>
+                        <p>Pediatrician</p>
+                        <p>MD, FAAP • Pediatrics</p>
+                        <a href="#" class="btn">Profile Info</a>
+                    </div>
+                </div>
+                <div class="doctor-card">
+                    <img src="https://doximity-res.cloudinary.com/images/f_auto,q_auto,t_profile_photo_320x320/leipfgnnq8ykyanlroaz/robert-williams-md-aurora-co.jpg" alt="Dr. Robert Williams">
+                    <div class="doctor-info">
+                        <h3>Dr. Robert Williams</h3>
+                        <p>Orthopedic Surgeon</p>
+                        <p>MD, FACS • Orthopedics</p>
+                        <a href="#" class="btn">Profile Info</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <h2>Patient Testimonials</h2>
+            <p class="section-desc">Read reviews from patients who received specialized treatment at our medical center.</p>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <p>"The care I received at Santhéa was exceptional. The doctors took their time to listen, explain diagnoses clearly, and guide my cardiac recovery."</p>
+                    <div class="patient-info">
+                        <div class="patient-details">
+                            <h4>John D.</h4>
+                            <p>Cardiac Outpatient</p>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"From the moment I was admitted, I felt secure and well cared for. The emergency clinical nursing staff was incredibly supportive and patient."</p>
+                    <div class="patient-info">
+                        <div class="patient-details">
+                            <h4>Maria G.</h4>
+                            <p>Obstetrics Patient</p>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"The pediatrics team was fantastic with my son during his surgery stay. They made him comfortable and explained every detail to us."</p>
+                    <div class="patient-info">
+                        <div class="patient-details">
+                            <h4>David & Emily T.</h4>
+                            <p>Parents of Pediatric Patient</p>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Info -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Contact Our Hospital</h2>
+            <p class="section-desc">Reach us via our clinical help desks, email queries, or physical location map.</p>
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Location</h3>
+                    <p>123 Medical Drive<br>Healthville, HV 12345<br>United States</p>
+                    <a href="#" class="btn btn-secondary">Get Directions</a>
+                </div>
+                <div class="contact-card">
+                    <i class="fas fa-phone-alt"></i>
+                    <h3>Contact Information</h3>
+                    <p><strong>Main Clinic:</strong> (555) 123-4567<br>
+                    <strong>Emergency Roster:</strong> 911<br>
+                    <strong>Email Query:</strong> info@santheahospital.com</p>
+                    <a href="contpagepatient.html" class="btn">Open Contact Form</a>
+                </div>
+                <div class="contact-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>Hours of Operation</h3>
+                    <p><strong>Emergency Trauma:</strong> 24/7<br>
+                    <strong>Outpatient Clinic:</strong> Mon-Fri 8am-8pm<br>
+                    <strong>Specialist Visits:</strong> Weekends 9am-5pm</p>
+                    <a href="#" class="btn btn-secondary">Full Schedule</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>About Us</h3>
+                    <ul>
+                        <li><a href="#">Our Mission</a></li>
+                        <li><a href="#">Board Leadership</a></li>
+                        <li><a href="#">Accreditations</a></li>
+                        <li><a href="#">Clinical Careers</a></li>
+                        <li><a href="#">Volunteer Programs</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Specialties</h3>
+                    <ul>
+                        <li><a href="#">Emergency Trauma</a></li>
+                        <li><a href="#">Cardiology Unit</a></li>
+                        <li><a href="#">Pediatrics Ward</a></li>
+                        <li><a href="#">Orthopedics</a></li>
+                        <li><a href="#">General Medicine</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>For Patients</h3>
+                    <ul>
+                        <li><a href="multirole.html?role=patient">Patient Portal</a></li>
+                        <li><a href="#">Medical Records Request</a></li>
+                        <li><a href="#">Billing & Insurance</a></li>
+                        <li><a href="#">Visitor Guidelines</a></li>
+                        <li><a href="#">Clinic Education</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Connect With Us</h3>
+                    <div class="contact-info">
+                        <p><i class="fas fa-map-marker-alt"></i> 123 Medical Drive, Healthville, HV 12345</p>
+                        <p><i class="fas fa-phone-alt"></i> Main Helpdesk: (555) 123-4567</p>
+                        <p><i class="fas fa-envelope"></i> info@santheahospital.com</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 Santhéa General Hospital. All Rights Reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a> | <a href="#">Accessibility Policies</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Redirect Logic: route to dashboard or booking if logged in, otherwise login page
+        function handleBookingRedirect() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                window.location.href = 'appoint.html';
+            } else {
+                window.location.href = 'multirole.html?role=patient';
+            }
+        }
+
+        function handlePortalRedirect() {
+            window.location.href = 'multirole.html';
+        }
+
+        // Add listeners to actions
+        document.getElementById('nav-action-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            handlePortalRedirect();
+        });
+
+        document.getElementById('hero-book-btn').addEventListener('click', function() {
+            handleBookingRedirect();
+        });
+
+        document.querySelectorAll('.quick-book-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                handleBookingRedirect();
+            });
+        });
+    </script>
+</body>
+</html>

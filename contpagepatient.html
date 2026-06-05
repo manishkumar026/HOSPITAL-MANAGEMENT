@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Santhéa Hospital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #ff3333;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            background-color: #cc0000;
+            transform: translateY(-2px);
+        }
+        
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #0066cc;
+            text-align: center;
+        }
+        
+        /* Header Styles (same as main page) */
+        header {
+            background-color: #0066cc;
+            color: white;
+            padding: 1rem 0;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 60px;
+            margin-right: 15px;
+        }
+        
+        .logo-text h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .logo-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .emergency-contact {
+            background-color: #ff3333;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Navigation (same as main page) */
+        nav {
+            background-color: #004d99;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-right: 15px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 3px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        
+        nav ul li a i {
+            margin-right: 8px;
+            font-size: 1rem;
+        }
+        
+        nav ul li a:hover {
+            background-color: #003366;
+        }
+        
+        /* Contact Form Styles */
+        .contact-form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            margin: 40px auto;
+            max-width: 800px;
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-header h2 {
+            color: #0066cc;
+            margin-bottom: 10px;
+        }
+        
+        .form-header p {
+            color: #666;
+        }
+        
+        .contact-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .full-width {
+            grid-column: span 2;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: #0066cc;
+            outline: none;
+        }
+        
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            grid-column: span 2;
+            text-align: center;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: #ff3333;
+        }
+        
+        /* Contact Info Box */
+        .contact-info-box {
+            background-color: #E1F5FE;
+            border-left: 4px solid #0066cc;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 4px;
+        }
+        
+        .contact-info-box h3 {
+            color: #0066cc;
+            margin-bottom: 15px;
+        }
+        
+        .contact-info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .contact-info-item i {
+            color: #0066cc;
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Footer (same as main page) */
+        footer {
+            background-color: #124d87;
+            color: white;
+            padding: 50px 0 20px;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #004d99;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .contact-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .full-width, .submit-btn {
+                grid-column: span 1;
+            }
+            
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .contact-form-container {
+                padding: 20px;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-top">
+            <div class="logo">
+                <img src="https://via.placeholder.com/60x60" alt="Santhéa Hospital">
+                <div class="logo-text">
+                    <h1>Santhéa Hospital</h1>
+                    <p>Compassionate Care, Advanced Medicine</p>
+                </div>
+            </div>
+            <div class="emergency-contact">
+                <i class="fas fa-phone-alt"></i> Emergency: 911
+            </div>
+        </div>
+    </header>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="container nav-container">
+            <ul>
+                <li><a href="homepage.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href=""><i class="fas fa-info-circle"></i> About Us</a></li>
+                <li><a href="index.html#services"><i class="fas fa-procedures"></i> Services</a></li>
+                <li><a href="index.html#doctors"><i class="fas fa-user-md"></i> Doctors</a></li>
+                <li><a href="appoint.html"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
+                <li><a href="index.html#testimonials"><i class="fas fa-quote-left"></i> Testimonials</a></li>
+                <li><a href="contpagepatient.html"><i class="fas fa-envelope"></i> Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Contact Form Section -->
+    <div class="container">
+        <div class="contact-form-container">
+            <div class="form-header">
+                <h2>Contact Santhéa Hospital</h2>
+                <p>Fill out the form below and our team will get back to you within 24 hours.</p>
+            </div>
+            
+            <form class="contact-form" action="submit_contact.php" method="POST">
+                <!-- Personal Information -->
+                <div class="form-group">
+                    <label for="first-name" class="required-field">First Name</label>
+                    <input type="text" id="first-name" name="first_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="last-name" class="required-field">Last Name</label>
+                    <input type="text" id="last-name" name="last_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="required-field">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone" class="required-field">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                
+                <!-- Contact Details -->
+                <div class="form-group full-width">
+                    <label for="subject">Subject</label>
+                    <select id="subject" name="subject">
+                        <option value="">Select a subject</option>
+                        <option value="appointment">Book an Appointment</option>
+                        <option value="billing">Billing Inquiry</option>
+                        <option value="medical-records">Medical Records</option>
+                        <option value="feedback">Feedback/Complaint</option>
+                        <option value="general">General Inquiry</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="department">Department (if applicable)</label>
+                    <select id="department" name="department">
+                        <option value="">Select a department</option>
+                        <option value="cardiology">Cardiology</option>
+                        <option value="neurology">Neurology</option>
+                        <option value="pediatrics">Pediatrics</option>
+                        <option value="orthopedics">Orthopedics</option>
+                        <option value="emergency">Emergency</option>
+                        <option value="administration">Administration</option>
+                    </select>
+                </div>
+                
+                <!-- Message -->
+                <div class="form-group full-width">
+                    <label for="message" class="required-field">Your Message</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                
+                <!-- Preferred Contact Method -->
+                <div class="form-group">
+                    <label>Preferred Contact Method</label>
+                    <div style="margin-top: 8px;">
+                        <input type="radio" id="contact-email" name="contact_method" value="email" checked>
+                        <label for="contact-email" style="display: inline; font-weight: normal;">Email</label>
+                        
+                        <input type="radio" id="contact-phone" name="contact_method" value="phone" style="margin-left: 15px;">
+                        <label for="contact-phone" style="display: inline; font-weight: normal;">Phone</label>
+                    </div>
+                </div>
+                
+                <!-- Best Time to Contact -->
+                <div class="form-group">
+                    <label for="contact-time">Best Time to Contact</label>
+                    <select id="contact-time" name="contact_time">
+                        <option value="">Any time</option>
+                        <option value="morning">Morning (8am-12pm)</option>
+                        <option value="afternoon">Afternoon (12pm-5pm)</option>
+                        <option value="evening">Evening (5pm-8pm)</option>
+                    </select>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="form-group submit-btn">
+                    <button type="submit" class="btn">Send Message</button>
+                </div>
+            </form>
+            
+            <!-- Additional Contact Information -->
+            <div class="contact-info-box">
+                <h3>Other Ways to Reach Us</h3>
+                
+                <div class="contact-info-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>Main: (555) 123-4567</span>
+                </div>
+                
+                <div class="contact-info-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>info@santheahospital.com</span>
+                </div>
+                
+                <div class="contact-info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>123 Medical Drive, Healthville, HV 12345</span>
+                </div>
+                
+                <div class="contact-info-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Monday-Friday: 8am-8pm | Weekends: 9am-5pm</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>About Us</h3>
+                    <ul>
+                        <li><a href="#">Our Mission</a></li>
+                        <li><a href="#">Leadership</a></li>
+                        <li><a href="#">Accreditations</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Volunteer</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="#">Emergency Care</a></li>
+                        <li><a href="#">Surgery</a></li>
+                        <li><a href="#">Maternity</a></li>
+                        <li><a href="#">Imaging</a></li>
+                        <li><a href="#">Rehabilitation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>For Patients</h3>
+                    <ul>
+                        <li><a href="#">Patient Portal</a></li>
+                        <li><a href="#">Billing</a></li>
+                        <li><a href="#">Medical Records</a></li>
+                        <li><a href="#">Visitor Information</a></li>
+                        <li><a href="#">Patient Education</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Connect With Us</h3>
+                    <div class="contact-info">
+                        <p><i class="fas fa-map-marker-alt"></i> 123 Medical Drive, Healthville, HV 12345</p>
+                        <p><i class="fas fa-phone-alt"></i> Main: (555) 123-4567</p>
+                        <p><i class="fas fa-envelope"></i> info@santheahospital.com</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Santhéa Hospital. All Rights Reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a> | <a href="#">Accessibility</a></p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        document.querySelector('.contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for contacting Santhéa Hospital! Your inquiry has been logged successfully. Our administrative team will reach out to you shortly.');
+            this.reset();
+            window.location.href = 'homepage.html';
+        });
+    </script>
+</body>
+</html>

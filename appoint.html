@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santhéa Hospital - Book Appointment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary: #4f46e5; /* Indigo */
+            --primary-hover: #4338ca;
+            --secondary: #0f172a; /* Slate Dark */
+            --accent: #f59e0b; /* Amber */
+            --light: #f8fafc;
+            --dark: #0f172a;
+            --gray: #e2e8f0;
+            --border-radius: 16px;
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-main);
+        }
+
+        body {
+            background-color: var(--light);
+            background-image: radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.04) 0px, transparent 50%);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .booking-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: var(--secondary);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .card-header h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 5px;
+        }
+
+        .card-header p {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            letter-spacing: 0.02em;
+        }
+
+        .back-link {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0.85;
+            transition: opacity 0.2s;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        .form-content {
+            padding: 40px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+            margin-top: 10px;
+        }
+
+        label {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            outline: none;
+            color: var(--dark);
+            background-color: white;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            width: 100%;
+            margin-top: 15px;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2), 0 2px 4px -2px rgba(79, 70, 229, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3), 0 4px 6px -4px rgba(79, 70, 229, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 650px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                margin-bottom: 15px;
+            }
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+            .back-link span {
+                display: none;
+            }
+            .card-header {
+                padding: 25px 20px;
+            }
+            .form-content {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="booking-card">
+            <!-- Header -->
+            <div class="card-header">
+                <a href="paatient-dash.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> <span>Dashboard</span>
+                </a>
+                <h2>Book Consultation</h2>
+                <p>Schedule your clinical visit with our specialists</p>
+            </div>
+
+            <!-- Form Content -->
+            <div class="form-content">
+                <form action="#" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" required readonly style="background-color: #f1f5f9; color: #64748b;">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" required readonly style="background-color: #f1f5f9; color: #64748b;">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" required readonly style="background-color: #f1f5f9; color: #64748b;">
+                        </div>
+                        <div class="form-group">
+                            <label for="dob">Date of Birth</label>
+                            <input type="date" id="dob" name="dob" required readonly style="background-color: #f1f5f9; color: #64748b;">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="department">Medical Department</label>
+                            <select id="department" name="department" required>
+                                <option value="">Select Specialty</option>
+                                <option value="cardiology">Cardiology</option>
+                                <option value="pediatrics">Pediatrics</option>
+                                <option value="orthopedics">Orthopedics</option>
+                                <option value="general">General Medicine</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="doctor">Consultant Specialist</label>
+                            <select id="doctor" name="doctor" required>
+                                <option value="">Select Doctor</option>
+                                <!-- Dynamic Options -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="date">Appointment Date</label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="time">Time Slot</label>
+                            <select id="time" name="time" required>
+                                <option value="">Select Time Slot</option>
+                                <option value="09:00-10:00">09:00 AM - 10:00 AM</option>
+                                <option value="10:00-11:00">10:00 AM - 11:00 AM</option>
+                                <option value="11:00-12:00">11:00 AM - 12:00 PM</option>
+                                <option value="14:00-15:00">02:00 PM - 03:00 PM</option>
+                                <option value="15:00-16:00">03:00 PM - 04:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="message">Visit Notes / Reason for Booking (Optional)</label>
+                        <textarea id="message" name="message" placeholder="Provide any details about symptoms or the reason for your visit..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn">
+                        <i class="fas fa-calendar-check"></i> Complete Appointment Booking
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allDoctors = [];
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Session expired. Please log in again.');
+                window.location.href = 'multirole.html?role=patient';
+                return;
+            }
+
+            // Fetch current user details to prefill form
+            try {
+                const userRes = await fetch('/api/auth/me', {
+                    headers: { 'auth-token': token }
+                });
+                if (userRes.ok) {
+                    currentUser = await userRes.json();
+                    document.getElementById('name').value = `${currentUser.firstName} ${currentUser.lastName}`;
+                    document.getElementById('email').value = currentUser.email || '';
+                    document.getElementById('phone').value = currentUser.phone || '';
+                    if (currentUser.dob) {
+                        document.getElementById('dob').value = currentUser.dob;
+                    }
+                } else {
+                    localStorage.removeItem('token');
+                    window.location.href = 'multirole.html?role=patient';
+                    return;
+                }
+            } catch (err) {
+                console.error('Error fetching user info:', err);
+            }
+
+            // Fetch doctors list
+            try {
+                const docRes = await fetch('/api/users/doctors', {
+                    headers: { 'auth-token': token }
+                });
+                if (docRes.ok) {
+                    allDoctors = await docRes.json();
+                }
+            } catch (err) {
+                console.error('Error fetching doctors:', err);
+            }
+        });
+
+        // Dynamic doctor selection based on department
+        document.getElementById('department').addEventListener('change', function() {
+            const dept = this.value;
+            const doctorSelect = document.getElementById('doctor');
+            
+            // Clear existing options except first
+            while (doctorSelect.options.length > 1) {
+                doctorSelect.remove(1);
+            }
+
+            // Filter and add doctors
+            const filtered = allDoctors.filter(d => d.department.toLowerCase() === dept.toLowerCase());
+            filtered.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d.id;
+                opt.textContent = `Dr. ${d.firstName} ${d.lastName}`;
+                doctorSelect.appendChild(opt);
+            });
+        });
+
+        // Form submission
+        document.querySelector('form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Session expired. Please log in again.');
+                window.location.href = 'multirole.html?role=patient';
+                return;
+            }
+
+            const doctorId = document.getElementById('doctor').value;
+            const department = document.getElementById('department').value;
+            const apptDate = document.getElementById('date').value;
+            const timeSlot = document.getElementById('time').value;
+            const message = document.getElementById('message').value.trim();
+
+            if (!doctorId || !department || !apptDate || !timeSlot) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            // Combine date and time slot for dateTime parameter
+            const dateTime = new Date(`${apptDate}T00:00:00.000Z`).toISOString();
+
+            try {
+                const response = await fetch('/api/appointments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'auth-token': token
+                    },
+                    body: JSON.stringify({
+                        doctorId,
+                        department,
+                        dateTime,
+                        timeSlot,
+                        message
+                    })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert('Appointment booked successfully!');
+                    window.location.href = 'paatient-dash.html';
+                } else {
+                    alert('Booking failed: ' + (result.error || 'Unknown error'));
+                }
+            } catch (err) {
+                console.error('Booking error:', err);
+                alert('An error occurred during booking. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

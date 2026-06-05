@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🌍 Real-Time AQI Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      min-height: 100vh;
+      color: white;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 0 20px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      color: #aaa;
+      margin-top: 8px;
+      font-size: 0.95rem;
+    }
+
+    .live-badge {
+      display: inline-block;
+      background: #ff4d4d;
+      color: white;
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      margin-top: 10px;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px auto;
+      max-width: 600px;
+      flex-wrap: wrap;
+    }
+
+    .search-bar input {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 30px;
+      border: none;
+      font-size: 1rem;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      outline: none;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .search-bar input::placeholder { color: #ccc; }
+
+    .search-bar button {
+      padding: 12px 25px;
+      border-radius: 30px;
+      border: none;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .search-bar button:hover { opacity: 0.85; }
+
+    .popular-cities {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .popular-cities p {
+      color: #aaa;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+
+    .city-chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .chip {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 6px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: 0.2s;
+    }
+
+    .chip:hover {
+      background: rgba(0,198,255,0.2);
+      border-color: #00c6ff;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .aqi-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .aqi-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .aqi-card .city-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 4px;
+      text-transform: capitalize;
+    }
+
+    .aqi-card .station-name {
+      font-size: 0.75rem;
+      color: #aaa;
+      margin-bottom: 15px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .aqi-number {
+      font-size: 3.5rem;
+      font-weight: 900;
+      line-height: 1;
+      margin: 10px 0;
+    }
+
+    .aqi-label {
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+
+    .pollutants {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .pollutant-item {
+      background: rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 0.78rem;
+    }
+
+    .pollutant-item span {
+      display: block;
+      color: #aaa;
+      font-size: 0.7rem;
+    }
+
+    .aqi-bar {
+      height: 6px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.1);
+      margin: 12px 0;
+      overflow: hidden;
+    }
+
+    .aqi-bar-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 1s ease;
+    }
+
+    .updated-time {
+      font-size: 0.7rem;
+      color: #888;
+      margin-top: 12px;
+      text-align: right;
+    }
+
+    .loading-card {
+      background: rgba(255,255,255,0.07);
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      color: #aaa;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .spinner {
+      width: 35px;
+      height: 35px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top: 3px solid #00c6ff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .error-card {
+      background: rgba(255,77,77,0.1);
+      border: 1px solid rgba(255,77,77,0.3);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      color: #ff6b6b;
+      font-size: 0.9rem;
+    }
+
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin: 20px auto;
+      max-width: 800px;
+      background: rgba(255,255,255,0.05);
+      padding: 15px 25px;
+      border-radius: 15px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-item .val {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #00c6ff;
+    }
+
+    .stat-item .lbl {
+      font-size: 0.75rem;
+      color: #aaa;
+    }
+
+    .refresh-btn {
+      display: block;
+      margin: 0 auto 20px;
+      padding: 10px 25px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: 0.3s;
+    }
+
+    .refresh-btn:hover {
+      background: rgba(0,198,255,0.2);
+      border-color: #00c6ff;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #555;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🌍 Real-Time AQI Dashboard</h1>
+  <p>Live Air Quality Index — powered by WAQI API (100+ countries)</p>
+  <div class="live-badge">● LIVE</div>
+</header>
+
+<!-- Stats Summary -->
+<div class="stats-bar" id="statsBar" style="display:none;">
+  <div class="stat-item">
+    <div class="val" id="totalCities">0</div>
+    <div class="lbl">Cities Monitored</div>
+  </div>
+  <div class="stat-item">
+    <div class="val" id="avgAqi">--</div>
+    <div class="lbl">Average AQI</div>
+  </div>
+  <div class="stat-item">
+    <div class="val" id="mostPolluted">--</div>
+    <div class="lbl">Most Polluted</div>
+  </div>
+  <div class="stat-item">
+    <div class="val" id="cleanestCity">--</div>
+    <div class="lbl">Cleanest City</div>
+  </div>
+</div>
+
+<!-- Search Bar -->
+<div class="search-bar">
+  <input type="text" id="cityInput" placeholder="🔍 Search any city (e.g. Mumbai, London, Tokyo)..." />
+  <button onclick="searchCity()">Search</button>
+</div>
+
+<!-- Popular Cities -->
+<div class="popular-cities">
+  <p>⚡ Quick Access Cities:</p>
+  <div class="city-chips" id="chipContainer"></div>
+</div>
+
+<!-- Refresh Button -->
+<button class="refresh-btn" onclick="loadAllCities()">🔄 Refresh All</button>
+
+<!-- Cards Grid -->
+<div class="cards-grid" id="cardsGrid">
+  <div class="loading-card">
+    <div class="spinner"></div>
+    Loading real-time AQI data...
+  </div>
+</div>
+
+<footer>
+  <p>Data source: World Air Quality Index (WAQI) · Updated every hour · AQI scale: US EPA Standard</p>
+</footer>
+
+<script>
+  // =============================================
+  // 🔑 REPLACE WITH YOUR WAQI API TOKEN
+  // Get free token at: https://aqicn.org/data-platform/token/
+  // =============================================
+  const API_TOKEN = 'YOUR_API_TOKEN';
+
+  // 🌍 Default cities to monitor (global coverage)
+  const DEFAULT_CITIES = [
+    'beijing', 'shanghai', 'delhi', 'mumbai', 'kolkata',
+    'london', 'paris', 'berlin', 'moscow', 'istanbul',
+    'new-york', 'los-angeles', 'chicago', 'toronto', 'mexico-city',
+    'tokyo', 'seoul', 'bangkok', 'singapore', 'jakarta',
+    'cairo', 'lagos', 'nairobi', 'johannesburg', 'casablanca',
+    'sydney', 'melbourne', 'dubai', 'riyadh', 'karachi',
+    'dhaka', 'lahore', 'hong-kong', 'taipei', 'osaka',
+    'madrid', 'rome', 'amsterdam', 'brussels', 'zurich',
+    'sao-paulo', 'buenos-aires', 'bogota', 'lima', 'santiago'
+  ];
+
+  let allAqiData = [];
+
+  // AQI Level Config
+  function getAqiConfig(aqi) {
+    if (aqi <= 50)  return { label: 'Good',            color: '#00e400', bg: 'rgba(0,228,64,0.15)',   textColor: '#00e400',  emoji: '😊' };
+    if (aqi <= 100) return { label: 'Moderate',         color: '#ffff00', bg: 'rgba(255,255,0,0.1)',   textColor: '#ffff00',  emoji: '😐' };
+    if (aqi <= 150) return { label: 'Unhealthy (S.G.)', color: '#ff7e00', bg: 'rgba(255,126,0,0.15)',  textColor: '#ff7e00',  emoji: '😷' };
+    if (aqi <= 200) return { label: 'Unhealthy',        color: '#ff0000', bg: 'rgba(255,0,0,0.15)',    textColor: '#ff4d4d',  emoji: '🤢' };
+    if (aqi <= 300) return { label: 'Very Unhealthy',   color: '#8f3f97', bg: 'rgba(143,63,151,0.2)',  textColor: '#c084ce',  emoji: '🚨' };
+    return            { label: 'Hazardous',             color: '#7e0023', bg: 'rgba(126,0,35,0.25)',   textColor: '#ff6b8a',  emoji: '☠️' };
+  }
+
+  // Generate City Chips
+  function generateChips() {
+    const container = document.getElementById('chipContainer');
+    DEFAULT_CITIES.slice(0, 20).forEach(city => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.textContent = city.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      chip.onclick = () => {
+        document.getElementById('cityInput').value = city;
+        searchCity();
+      };
+      container.appendChild(chip);
+    });
+  }
+
+  // Fetch AQI for a single city
+  async function fetchCityAQI(city) {
+    try {
+      const url = `https://api.waqi.info/feed/${encodeURIComponent(city)}/?token=${API_TOKEN}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.status === 'ok') return data.data;
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Create AQI Card HTML
+  function createCard(data, cityName) {
+    const aqi = typeof data.aqi === 'number' ? data.aqi : parseInt(data.aqi);
+    if (isNaN(aqi)) return null;
+
+    const config = getAqiConfig(aqi);
+    const pct = Math.min((aqi / 500) * 100, 100).toFixed(1);
+    const iaqi = data.iaqi || {};
+    const time = data.time?.s ? new Date(data.time.s).toLocaleTimeString() : 'N/A';
+    const station = data.city?.name || cityName;
+    const displayCity = cityName.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+    const pollutants = [
+      { key: 'pm25', label: 'PM2.5' },
+      { key: 'pm10', label: 'PM10' },
+      { key: 'no2',  label: 'NO₂' },
+      { key: 'o3',   label: 'O₃' },
+      { key: 'so2',  label: 'SO₂' },
+      { key: 'co',   label: 'CO' }
+    ];
+
+    const pollutantHTML = pollutants
+      .filter(p => iaqi[p.key])
+      .map(p => `
+        <div class="pollutant-item">
+          <span>${p.label}</span>
+          ${iaqi[p.key].v}
+        </div>
+      `).join('');
+
+    return `
+      <div class="aqi-card" style="background: linear-gradient(135deg, ${config.bg}, rgba(255,255,255,0.04)); border-color: ${config.color}22;">
+        <div class="city-name">${config.emoji} ${displayCity}</div>
+        <div class="station-name">📍 ${station}</div>
+        <div class="aqi-number" style="color: ${config.color};">${aqi}</div>
+        <div class="aqi-label" style="background:${config.bg}; color:${config.textColor}; border: 1px solid ${config.color}44;">
+          ${config.label}
+        </div>
+        <div class="aqi-bar">
+          <div class="aqi-bar-fill" style="width:${pct}%; background: linear-gradient(to right, ${config.color}88, ${config.color});"></div>
+        </div>
+        <div class="pollutants">${pollutantHTML || '<div style="color:#888; grid-column:1/-1; text-align:center; font-size:0.8rem;">Pollutant details unavailable</div>'}</div>
+        <div class="updated-time">⏱ Updated: ${time}</div>
+      </div>
+    `;
+  }
+
+  // Update Stats Bar
+  function updateStats() {
+    if (allAqiData.length === 0) return;
+
+    document.getElementById('statsBar').style.display = 'flex';
+    document.getElementById('totalCities').textContent = allAqiData.length;
+
+    const avg = Math.round(allAqiData.reduce((s, d) => s + d.aqi, 0) / allAqiData.length);
+    document.getElementById('avgAqi').textContent = avg;
+
+    const worst = allAqiData.reduce((a, b) => a.aqi > b.aqi ? a : b);
+    document.getElementById('mostPolluted').textContent =
+      worst.city.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+    const best = allAqiData.reduce((a, b) => a.aqi < b.aqi ? a : b);
+    document.getElementById('cleanestCity').textContent =
+      best.city.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  // Load All Cities
+  async function loadAllCities() {
+    const grid = document.getElementById('cardsGrid');
+    allAqiData = [];
+
+    // Show loading state
+    grid.innerHTML = DEFAULT_CITIES.map(city => `
+      <div class="loading-card">
+        <div class="spinner"></div>
+        Loading ${city.replace(/-/g, ' ')}...
+      </div>
+    `).join('');
+
+    // Fetch all cities in parallel
+    const results = await Promise.allSettled(
+      DEFAULT_CITIES.map(city =>
+        fetchCityAQI(city).then(data => ({ city, data }))
+      )
+    );
+
+    grid.innerHTML = '';
+
+    results.forEach(result => {
+      if (result.status === 'fulfilled' && result.value.data) {
+        const { city, data } = result.value;
+        const cardHTML = createCard(data, city);
+        if (cardHTML) {
+          grid.innerHTML += cardHTML;
+          allAqiData.push({ city, aqi: typeof data.aqi === 'number' ? data.aqi : parseInt(data.aqi) });
+        }
+      } else {
+        const city = result.value?.city || 'unknown';
+        grid.innerHTML += `
+          <div class="error-card">
+            ❌ Could not load data for <b>${city}</b><br/>
+            <small>Station may be offline</small>
+          </div>`;
+      }
+    });
+
+    if (grid.innerHTML === '') {
+      grid.innerHTML = `<div class="error-card">⚠️ No data loaded. Check your API token or network.</div>`;
+    }
+
+    updateStats();
+  }
+
+  // Search a specific city
+  async function searchCity() {
+    const input = document.getElementById('cityInput').value.trim();
+    if (!input) return;
+
+    const grid = document.getElementById('cardsGrid');
+    grid.innerHTML = `<div class="loading-card"><div class="spinner"></div>Searching "${input}"...</div>`;
+
+    const data = await fetchCityAQI(input);
+
+    if (data) {
+      const cardHTML = createCard(data, input);
+      grid.innerHTML = cardHTML || `<div class="error-card">⚠️ Could not parse AQI data for "${input}"</div>`;
+      allAqiData = [{ city: input, aqi: typeof data.aqi === 'number' ? data.aqi : parseInt(data.aqi) }];
+      updateStats();
+    } else {
+      grid.innerHTML = `
+        <div class="error-card">
+          ❌ No data found for "<b>${input}</b>"<br/>
+          <small>Try another spelling or city name</small>
+        </div>`;
+    }
+  }
+
+  // Allow Enter key to search
+  document.getElementById('cityInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') searchCity();
+  });
+
+  // Init
+  generateChips();
+  loadAllCities();
+
+  // Auto-refresh every 10 minutes
+  setInterval(loadAllCities, 600000);
+</script>
+</body>
+</html>

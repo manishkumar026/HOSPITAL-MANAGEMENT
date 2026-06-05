@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santhéa Hospital - Unified Access Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #0f172a;
+            --light: #f8fafc;
+            --dark: #0f172a;
+            --gray: #e2e8f0;
+            --border-radius: 16px;
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            /* Role Specific Theme Variables */
+            --role-color: #10b981; /* Default to Patient */
+            --role-color-hover: #059669;
+            --role-bg-light: #ecfdf5;
+            
+            --color-patient: #10b981;
+            --color-patient-hover: #059669;
+            --color-patient-light: #ecfdf5;
+            
+            --color-doctor: #4f46e5;
+            --color-doctor-hover: #4338ca;
+            --color-doctor-light: #eef2ff;
+            
+            --color-admin: #f59e0b;
+            --color-admin-hover: #d97706;
+            --color-admin-light: #fffbeb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-main);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        body {
+            background-color: var(--light);
+            background-image: radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.05) 0px, transparent 50%),
+                              radial-gradient(at 50% 0%, rgba(245, 158, 11, 0.03) 0px, transparent 50%);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        .portal-container {
+            max-width: 950px;
+            width: 100%;
+            display: flex;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            min-height: 600px;
+        }
+
+        /* Left side decorative/informational panel */
+        .info-panel {
+            flex: 1;
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+            transition: all 0.5s ease;
+        }
+
+        .info-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(79, 70, 229, 0.9) 100%);
+            z-index: -1;
+            transition: background 0.5s ease;
+        }
+
+        .info-panel.theme-patient::before {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(16, 185, 129, 0.9) 100%);
+        }
+        .info-panel.theme-doctor::before {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(79, 70, 229, 0.9) 100%);
+        }
+        .info-panel.theme-admin::before {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(245, 158, 11, 0.9) 100%);
+        }
+
+        .info-header .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+        }
+
+        .info-header .logo i {
+            font-size: 1.3rem;
+        }
+
+        .info-header .logo h1 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .info-content {
+            margin: 40px 0;
+        }
+
+        .info-content h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 15px;
+            letter-spacing: -0.03em;
+        }
+
+        .info-content p {
+            color: rgba(241, 245, 249, 0.9);
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .info-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .info-features li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+        }
+
+        .info-features i {
+            color: #ffcc00;
+            font-size: 1.1rem;
+        }
+
+        .info-footer {
+            font-size: 0.8rem;
+            color: rgba(226, 232, 240, 0.8);
+        }
+
+        .info-footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Right side login form panel */
+        .login-panel {
+            flex: 1.1;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .portal-title-block {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .portal-title-block h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--secondary);
+            letter-spacing: -0.02em;
+            margin-bottom: 5px;
+        }
+
+        .portal-title-block p {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        /* Tab Switchers */
+        .role-tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background-color: #f1f5f9;
+            padding: 6px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .role-tab-btn {
+            border: none;
+            background: transparent;
+            padding: 12px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #64748b;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .role-tab-btn i {
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+
+        .role-tab-btn:hover {
+            color: var(--secondary);
+        }
+
+        .role-tab-btn:hover i {
+            transform: translateY(-2px);
+        }
+
+        /* Active Tab Styles */
+        .role-tab-btn.active[data-role="patient"] {
+            background-color: white;
+            color: var(--color-patient);
+            box-shadow: var(--shadow);
+        }
+
+        .role-tab-btn.active[data-role="doctor"] {
+            background-color: white;
+            color: var(--color-doctor);
+            box-shadow: var(--shadow);
+        }
+
+        .role-tab-btn.active[data-role="admin"] {
+            background-color: white;
+            color: var(--color-admin);
+            box-shadow: var(--shadow);
+        }
+
+        /* Forms Layout */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i.input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px 12px 46px;
+            border: 1.5px solid var(--gray);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            outline: none;
+            color: var(--dark);
+            background-color: white;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--role-color);
+            box-shadow: 0 0 0 3.5px var(--role-bg-light);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #94a3b8;
+            transition: color 0.2s;
+        }
+
+        .password-toggle:hover {
+            color: var(--role-color);
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            font-size: 0.88rem;
+            color: #475569;
+            cursor: pointer;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            accent-color: var(--role-color);
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            color: var(--role-color);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        /* Buttons & Actions */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--role-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.98rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.25s;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--role-color-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit i.spinner {
+            display: none;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .divider:not(:empty)::before {
+            margin-right: 15px;
+        }
+
+        .divider:not(:empty)::after {
+            margin-left: 15px;
+        }
+
+        .btn-google {
+            width: 100%;
+            padding: 12px;
+            background-color: white;
+            color: #334155;
+            border: 1.5px solid var(--gray);
+            border-radius: 10px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-google:hover {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
+
+        .btn-google i {
+            color: #db4437;
+            font-size: 1.1rem;
+        }
+
+        .register-block {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.92rem;
+            color: #64748b;
+        }
+
+        .register-block a {
+            color: var(--role-color);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .register-block a:hover {
+            text-decoration: underline;
+        }
+
+        /* Alerts & Callouts */
+        .alert-box {
+            background-color: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #b91c1c;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.88rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            line-height: 1.4;
+            animation: slideDown 0.3s ease;
+        }
+
+        .alert-box i {
+            font-size: 1.1rem;
+            margin-top: 1px;
+        }
+
+        .alert-box .alert-close {
+            margin-left: auto;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .alert-box .alert-close:hover {
+            opacity: 1;
+        }
+
+        /* Role Mismatch Alert Box */
+        .mismatch-box {
+            background-color: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #b45309;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 0.88rem;
+            animation: slideDown 0.3s ease;
+        }
+
+        .mismatch-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .mismatch-header i {
+            font-size: 1.1rem;
+        }
+
+        .mismatch-body {
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .mismatch-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-switch {
+            background-color: #b45309;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-switch:hover {
+            opacity: 0.9;
+        }
+
+        .btn-dismiss {
+            background-color: transparent;
+            color: #b45309;
+            border: 1px solid #b45309;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-dismiss:hover {
+            background-color: rgba(180, 83, 9, 0.05);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Animations for Role Shifts */
+        .fade-in-section {
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Footer */
+        .portal-footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .portal-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .portal-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Layout */
+        @media (max-width: 800px) {
+            .portal-container {
+                flex-direction: column;
+            }
+            .info-panel {
+                padding: 40px 30px;
+                min-height: 250px;
+            }
+            .login-panel {
+                padding: 35px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="portal-container">
+        <!-- Left Side Info Panel -->
+        <div class="info-panel theme-patient" id="infoPanel" style="background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(16, 185, 129, 0.9) 100%), url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+            <div class="info-header">
+                <a href="homepage.html" class="logo">
+                    <i class="fas fa-hand-holding-medical"></i>
+                    <h1>Santhéa Hospital</h1>
+                </a>
+            </div>
+            
+            <div class="info-content" id="infoContent">
+                <!-- Dynamic Content Based on Selected Role -->
+                <div class="fade-in-section">
+                    <h2 id="infoTitle">Welcome to the Patient Gateway</h2>
+                    <p id="infoDesc">Access your medical history, schedule consultations with specialists, request electronic prescriptions, and message your care team in real-time.</p>
+                    <ul class="info-features" id="infoFeatures">
+                        <li><i class="fas fa-check-circle"></i> View test results and clinical charts</li>
+                        <li><i class="fas fa-check-circle"></i> Book appointments with board specialists</li>
+                        <li><i class="fas fa-check-circle"></i> Secure messaging with doctors</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="info-footer">
+                <p>&copy; 2026 Santhéa General Hospital. Need assistance? <a href="mailto:support@santheahospital.com">Email IT Support</a></p>
+            </div>
+        </div>
+
+        <!-- Right Side Login Form -->
+        <div class="login-panel">
+            <div class="portal-title-block">
+                <h2>Secure Login</h2>
+                <p>Provide your credentials to access the clinical system</p>
+            </div>
+
+            <!-- Role Selector Tabs -->
+            <div class="role-tabs">
+                <button type="button" class="role-tab-btn active" data-role="patient">
+                    <i class="fas fa-user-injured"></i>
+                    <span>Patient</span>
+                </button>
+                <button type="button" class="role-tab-btn" data-role="doctor">
+                    <i class="fas fa-user-md"></i>
+                    <span>Doctor</span>
+                </button>
+                <button type="button" class="role-tab-btn" data-role="admin">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Admin</span>
+                </button>
+            </div>
+
+            <!-- Custom Notification Alerts -->
+            <div id="alertContainer"></div>
+
+            <!-- Main Form -->
+            <form id="loginForm" autocomplete="on">
+                <div class="form-group">
+                    <label for="username" id="usernameLabel">Username or Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon" id="usernameIcon"></i>
+                        <input type="text" id="username" name="username" placeholder="e.g. sarah or sarah@gmail.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="password" name="password" placeholder="••••••••" required>
+                        <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+                    </div>
+                </div>
+
+                <div class="remember-forgot">
+                    <label class="remember-me">
+                        <input type="checkbox" id="remember" name="remember">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="forgot-password.html" class="forgot-password">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btnSubmit">
+                    <i class="fas fa-spinner fa-spin spinner" id="btnSpinner"></i>
+                    <span id="btnText">Sign In</span>
+                </button>
+
+                <div id="patientExtraBlock">
+                    <div class="divider">or</div>
+                    <button type="button" class="btn-google" id="btnGoogle">
+                        <i class="fab fa-google"></i>
+                        <span>Sign in with Google</span>
+                    </button>
+                    
+                    <div class="register-block">
+                        Don't have an account? <a href="register.html">Register here</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- GOOGLE ACCOUNT CHOOSER MODAL (Mock) -->
+    <style>
+        .google-acc-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.2s;
+            text-align: left;
+            background: white;
+            border: 1px solid transparent;
+        }
+        .google-acc-item:hover {
+            background-color: #f8f9fa;
+            border-color: #e0e0e0;
+        }
+        #google-input-email:focus {
+            border-color: #1a73e8 !important;
+            box-shadow: 0 0 0 1px #1a73e8;
+        }
+    </style>
+    <div id="google-chooser-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:10000; align-items:center; justify-content:center; padding: 20px;">
+        <div style="background:white; border-radius:12px; width:100%; max-width:400px; padding:30px; box-shadow:0 4px 20px rgba(0,0,0,0.15); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif; text-align:center;">
+            <!-- Google Logo -->
+            <div style="margin-bottom:20px; font-weight:bold; font-size:1.5rem; letter-spacing:-1px; font-family:'Product Sans',Arial,sans-serif;">
+                <span style="color:#4285F4;">G</span><span style="color:#EA4335;">o</span><span style="color:#FBBC05;">o</span><span style="color:#4285F4;">g</span><span style="color:#34A853;">l</span><span style="color:#EA4335;">e</span>
+            </div>
+            
+            <!-- VIEW 1: ACCOUNTS LIST -->
+            <div id="google-accounts-view">
+                <h3 style="font-size:1.3rem; font-weight:400; color:#202124; margin-bottom:5px; font-family:sans-serif;">Choose an account</h3>
+                <p style="font-size:0.9rem; color:#5f6368; margin-bottom:25px; font-family:sans-serif;">to continue to Santhéa Hospital</p>
+                
+                <!-- Accounts List -->
+                <div style="display:flex; flex-direction:column; border-bottom:1px solid #e0e0e0; margin-bottom:15px; text-align:left; gap:2px;">
+                    <!-- Sarah -->
+                    <div class="google-acc-item" onclick="googleSelectAccount('sarah.j@gmail.com')">
+                        <div style="background:#e8f0fe; color:#1a73e8; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.1rem; font-family:sans-serif;">S</div>
+                        <div>
+                            <div style="font-weight:bold; font-size:0.88rem; color:#3c4043; font-family:sans-serif;">Sarah Johnson</div>
+                            <div style="font-size:0.78rem; color:#5f6368; font-family:sans-serif;">sarah.j@gmail.com</div>
+                        </div>
+                    </div>
+                    <!-- Manish -->
+                    <div class="google-acc-item" onclick="googleSelectAccount('manish@gmail.com')">
+                        <div style="background:#fce8e6; color:#c5221f; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.1rem; font-family:sans-serif;">M</div>
+                        <div>
+                            <div style="font-weight:bold; font-size:0.88rem; color:#3c4043; font-family:sans-serif;">Manish</div>
+                            <div style="font-size:0.78rem; color:#5f6368; font-family:sans-serif;">manish@gmail.com</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Other Option -->
+                <div style="display:flex; flex-direction:column; text-align:left; margin-bottom: 20px;">
+                    <div class="google-acc-item" onclick="googleUseOtherAccount()">
+                        <div style="color:#5f6368; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; border:1px solid #dadce0; text-align:center;"><i class="fas fa-user-circle"></i></div>
+                        <span style="font-weight:500; font-size:0.88rem; color:#3c4043; font-family:sans-serif; margin-left: 12px;">Use another account</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 2: CUSTOM EMAIL INPUT -->
+            <div id="google-email-view" style="display:none; text-align:left;">
+                <div onclick="showGoogleAccountsView()" style="cursor:pointer; color:#5f6368; margin-bottom:15px; font-size:0.82rem; display:inline-flex; align-items:center; gap:6px; font-family:sans-serif; font-weight:500; padding:4px 8px; border-radius:4px; background:#f1f3f4;">
+                    <i class="fas fa-arrow-left" style="font-size: 0.75rem;"></i> Back to accounts
+                </div>
+                <h3 style="font-size:1.3rem; font-weight:400; color:#202124; margin-bottom:5px; font-family:sans-serif;">Sign in</h3>
+                <p style="font-size:0.9rem; color:#5f6368; margin-bottom:25px; font-family:sans-serif;">Use your Google Account</p>
+
+                <div style="position:relative; margin-bottom:20px;">
+                    <input type="email" id="google-input-email" placeholder="Email or phone" style="width:100%; padding:14px; border:1px solid #dadce0; border-radius:4px; font-size:0.95rem; outline:none; transition:border-color 0.2s; font-family:sans-serif;" required>
+                </div>
+                
+                <p style="font-size:0.75rem; color:#5f6368; margin-bottom:25px; font-family:sans-serif; line-height:1.4;">To continue, Google will share your name, email address, and profile picture with Santhéa Hospital.</p>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+                    <span style="color:#1a73e8; font-weight:bold; font-size:0.85rem; cursor:pointer; font-family:sans-serif;" onclick="showGoogleAccountsView()">Create account</span>
+                    <button type="button" onclick="googleSubmitCustomEmail()" style="background:#1a73e8; color:white; border:none; padding:10px 24px; border-radius:4px; font-size:0.88rem; font-weight:bold; cursor:pointer; transition: background 0.2s; font-family:sans-serif;">Next</button>
+                </div>
+            </div>
+            
+            <div style="margin-top:20px; display:flex; justify-content:flex-end; border-top: 1px solid #f1f3f4; padding-top: 10px;">
+                <button type="button" onclick="closeGoogleChooser()" style="border:none; background:none; color:#1a73e8; font-weight:bold; cursor:pointer; font-size:0.85rem; padding:8px 12px; border-radius:4px; font-family:sans-serif;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State Management
+        let activeRole = 'patient';
+        
+        // DOM Elements
+        const tabButtons = document.querySelectorAll('.role-tab-btn');
+        const rootElement = document.documentElement;
+        
+        const infoPanel = document.getElementById('infoPanel');
+        const infoContent = document.getElementById('infoContent');
+        const infoTitle = document.getElementById('infoTitle');
+        const infoDesc = document.getElementById('infoDesc');
+        const infoFeatures = document.getElementById('infoFeatures');
+        
+        const usernameLabel = document.getElementById('usernameLabel');
+        const usernameIcon = document.getElementById('usernameIcon');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+        
+        const loginForm = document.getElementById('loginForm');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const btnSpinner = document.getElementById('btnSpinner');
+        const btnText = document.getElementById('btnText');
+        const patientExtraBlock = document.getElementById('patientExtraBlock');
+        const alertContainer = document.getElementById('alertContainer');
+        const btnGoogle = document.getElementById('btnGoogle');
+
+        // Role Config Data
+        const roleConfigs = {
+            patient: {
+                color: '#10b981',
+                colorHover: '#059669',
+                bgLight: '#ecfdf5',
+                panelGradient: 'linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(16, 185, 129, 0.9) 100%)',
+                bgImage: 'url("https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80")',
+                infoTitle: 'Welcome to the Patient Gateway',
+                infoDesc: 'Access your medical history, schedule consultations with specialists, request electronic prescriptions, and message your care team in real-time.',
+                infoFeatures: [
+                    'View test results and clinical charts',
+                    'Book appointments with board specialists',
+                    'Secure messaging with doctors'
+                ],
+                usernameLabel: 'Username or Email Address',
+                usernamePlaceholder: 'e.g. sarah or sarah@gmail.com',
+                usernameIcon: 'fa-user'
+            },
+            doctor: {
+                color: '#4f46e5',
+                colorHover: '#4338ca',
+                bgLight: '#eef2ff',
+                panelGradient: 'linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(79, 70, 229, 0.9) 100%)',
+                bgImage: 'url("https://images.unsplash.com/photo-1581595219315-a187dd40c322?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80")',
+                infoTitle: 'Welcome to the Practitioner Portal',
+                infoDesc: 'Coordinate patient visits, update medical histories, issue digital prescriptions, review diagnoses, and consult with patients in real-time.',
+                infoFeatures: [
+                    'Review and update patient medical charts',
+                    'Manage your consulting schedule and slots',
+                    'Issue electronic pharmaceutical prescriptions'
+                ],
+                usernameLabel: 'Doctor ID or Email Address',
+                usernamePlaceholder: 'e.g. dr_chen or dr_patel',
+                usernameIcon: 'fa-user-md'
+            },
+            admin: {
+                color: '#f59e0b',
+                colorHover: '#d97706',
+                bgLight: '#fffbeb',
+                panelGradient: 'linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(245, 158, 11, 0.9) 100%)',
+                bgImage: 'url("https://images.unsplash.com/photo-1551601651-bc60f254d532?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80")',
+                infoTitle: 'System Administration Center',
+                infoDesc: 'Access administrative features to manage clinical staff directories, configure user permissions, oversee appointments, and audit database connection logs.',
+                infoFeatures: [
+                    'Manage and audit user directories & security roles',
+                    'Monitor hospital system health & connection logs',
+                    'Generate clinical operations statistics reports'
+                ],
+                usernameLabel: 'Admin ID or Email Address',
+                usernamePlaceholder: 'e.g. admin',
+                usernameIcon: 'fa-user-shield'
+            }
+        };
+
+        // Initialize from URL parameters
+        function initPortal() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const roleParam = urlParams.get('role');
+            
+            if (roleParam && roleConfigs[roleParam.toLowerCase()]) {
+                setRole(roleParam.toLowerCase());
+            } else {
+                setRole('patient'); // Default
+            }
+        }
+
+        // Set Role Function
+        function setRole(role) {
+            activeRole = role;
+            const config = roleConfigs[role];
+            
+            // Clear mismatch or other notifications when shifting role
+            alertContainer.innerHTML = '';
+            
+            // Update Active Class on Tabs
+            tabButtons.forEach(btn => {
+                const btnRole = btn.getAttribute('data-role');
+                if (btnRole === role) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Update Root CSS variables for color themes
+            rootElement.style.setProperty('--role-color', config.color);
+            rootElement.style.setProperty('--role-color-hover', config.colorHover);
+            rootElement.style.setProperty('--role-bg-light', config.bgLight);
+
+            // Update Left Panel
+            infoPanel.className = `info-panel theme-${role}`;
+            infoPanel.style.backgroundImage = `${config.panelGradient}, ${config.bgImage}`;
+            
+            // Fade-in animation on text details
+            infoContent.innerHTML = `
+                <div class="fade-in-section">
+                    <h2 id="infoTitle">${config.infoTitle}</h2>
+                    <p id="infoDesc">${config.infoDesc}</p>
+                    <ul class="info-features" id="infoFeatures">
+                        ${config.infoFeatures.map(feat => `<li><i class="fas fa-check-circle"></i> ${feat}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+
+            // Update Form Labels & Inputs
+            usernameLabel.textContent = config.usernameLabel;
+            usernameInput.placeholder = config.usernamePlaceholder;
+            
+            // Update Input Icons
+            usernameIcon.className = `fas ${config.usernameIcon} input-icon`;
+
+            // Toggle Google login and register link visibility
+            if (role === 'patient') {
+                patientExtraBlock.style.display = 'block';
+            } else {
+                patientExtraBlock.style.display = 'none';
+            }
+        }
+
+        // Tab button click listeners
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const role = btn.getAttribute('data-role');
+                setRole(role);
+                
+                // Update URL query param without refreshing
+                const newUrl = window.location.pathname + '?role=' + role;
+                window.history.pushState({ path: newUrl }, '', newUrl);
+            });
+        });
+
+        // Toggle password visibility
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // Show standard notification alerts
+        function showAlert(message, type = 'error') {
+            alertContainer.innerHTML = `
+                <div class="alert-box">
+                    <i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i>
+                    <div>${message}</div>
+                    <i class="fas fa-times alert-close" onclick="this.parentElement.remove()"></i>
+                </div>
+            `;
+        }
+
+        // Show Role Mismatch warning panel
+        function showMismatchAlert(actualRole, enteredUsername, enteredPassword) {
+            const displayActualRole = actualRole.charAt(0).toUpperCase() + actualRole.slice(1);
+            const displaySelectedRole = activeRole.charAt(0).toUpperCase() + activeRole.slice(1);
+            
+            alertContainer.innerHTML = `
+                <div class="mismatch-box">
+                    <div class="mismatch-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Portal Discrepancy Found</span>
+                    </div>
+                    <div class="mismatch-body">
+                        The account entered belongs to a <strong>${displayActualRole}</strong> profile, but you selected the <strong>${displaySelectedRole}</strong> gateway. Would you like to shift to the correct portal and sign in?
+                    </div>
+                    <div class="mismatch-actions">
+                        <button type="button" class="btn-switch" id="btnSwitchMismatch">Shift & Log In</button>
+                        <button type="button" class="btn-dismiss" onclick="this.parentElement.parentElement.remove()">Dismiss</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('btnSwitchMismatch').addEventListener('click', async () => {
+                setRole(actualRole);
+                // Pre-fill credentials and resubmit
+                usernameInput.value = enteredUsername;
+                passwordInput.value = enteredPassword;
+                alertContainer.innerHTML = '';
+                submitLogin(enteredUsername, enteredPassword);
+            });
+        }
+
+        // Submit Login Logic
+        async function submitLogin(username, password) {
+            // Set loading state
+            btnSubmit.disabled = true;
+            btnSpinner.style.display = 'inline-block';
+            btnText.textContent = 'Authenticating...';
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // Check if role matches selection
+                    const userRole = result.user.role;
+                    
+                    if (userRole !== activeRole) {
+                        // Display Role Mismatch Alert Box to help user
+                        showAlert('', 'error'); // Clear standard
+                        showMismatchAlert(userRole, username, password);
+                        
+                        // Restore button states
+                        btnSubmit.disabled = false;
+                        btnSpinner.style.display = 'none';
+                        btnText.textContent = 'Sign In';
+                        return;
+                    }
+
+                    // Successful login and matching role
+                    localStorage.setItem('token', result.token);
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    
+                    alertContainer.innerHTML = `
+                        <div class="alert-box" style="background-color: #ecfdf5; border-color: #a7f3d0; color: #065f46;">
+                            <i class="fas fa-check-circle"></i>
+                            <div>Login verified! Access authorized. Syncing dashboard...</div>
+                        </div>
+                    `;
+
+                    // Redirect to correct dashboard
+                    setTimeout(() => {
+                        if (userRole === 'admin') {
+                            window.location.href = 'admin-dash.html';
+                        } else if (userRole === 'doctor') {
+                            window.location.href = 'doctor-dasd.html';
+                        } else {
+                            window.location.href = 'paatient-dash.html';
+                        }
+                    }, 800);
+
+                } else {
+                    showAlert(result.error || 'Authentication rejected. Verify inputs.');
+                    btnSubmit.disabled = false;
+                    btnSpinner.style.display = 'none';
+                    btnText.textContent = 'Sign In';
+                }
+            } catch (err) {
+                console.error('Portal Login error:', err);
+                showAlert('Network request aborted. Verify that the Santhéa API server is running.');
+                btnSubmit.disabled = false;
+                btnSpinner.style.display = 'none';
+                btnText.textContent = 'Sign In';
+            }
+        }
+
+        // Form Submit listener
+        loginForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            if (!username || !password) {
+                showAlert('Please fill in both fields.');
+                return;
+            }
+
+            submitLogin(username, password);
+        });
+
+        // Mock Google Login Functionality
+        btnGoogle.addEventListener('click', function () {
+            document.getElementById('google-chooser-modal').style.display = 'flex';
+        });
+
+        window.closeGoogleChooser = function () {
+            document.getElementById('google-chooser-modal').style.display = 'none';
+        };
+
+        window.googleSelectAccount = async function (email) {
+            closeGoogleChooser();
+            try {
+                const response = await fetch('/api/auth/google-login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    localStorage.setItem('token', result.token);
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    
+                    alertContainer.innerHTML = `
+                        <div class="alert-box" style="background-color: #ecfdf5; border-color: #a7f3d0; color: #065f46;">
+                            <i class="fas fa-check-circle"></i>
+                            <div>Google login successful! Redirecting to Patient Portal...</div>
+                        </div>
+                    `;
+                    
+                    setTimeout(() => {
+                        window.location.href = 'paatient-dash.html';
+                    }, 800);
+                } else {
+                    showAlert('Google OAuth failed: ' + result.error);
+                }
+            } catch (err) {
+                console.error(err);
+                showAlert('Server connection error. Ensure backend is running.');
+            }
+        };
+
+        window.googleUseOtherAccount = function () {
+            document.getElementById('google-accounts-view').style.display = 'none';
+            document.getElementById('google-email-view').style.display = 'block';
+            document.getElementById('google-input-email').value = '';
+            document.getElementById('google-input-email').focus();
+        };
+
+        window.showGoogleAccountsView = function () {
+            document.getElementById('google-email-view').style.display = 'none';
+            document.getElementById('google-accounts-view').style.display = 'block';
+        };
+
+        window.googleSubmitCustomEmail = function () {
+            const email = document.getElementById('google-input-email').value.trim();
+            if (!email) {
+                showAlert('Please enter your email address.');
+                return;
+            }
+            if (!email.includes('@') || !email.includes('.')) {
+                showAlert('Please enter a valid Google Mail address.');
+                return;
+            }
+            googleSelectAccount(email);
+        };
+
+        // Initialize portal on load
+        window.addEventListener('DOMContentLoaded', initPortal);
+    </script>
+</body>
+</html>

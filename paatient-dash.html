@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare - Patient Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary: #4f46e5; /* Modern Indigo */
+            --secondary: #0f172a; /* Slate Dark */
+            --accent: #f59e0b; /* Amber */
+            --light: #f8fafc;
+            --dark: #0f172a;
+            --gray: #e2e8f0;
+            --border-radius: 12px;
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-main);
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background-color: var(--secondary);
+            color: white;
+            padding: 20px 0;
+        }
+        
+        .profile {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 3px solid var(--accent);
+        }
+        
+        .nav-menu {
+            margin-top: 30px;
+        }
+        
+        .nav-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255,255,255,0.1);
+            border-left: 4px solid var(--accent);
+        }
+        
+        .nav-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .page-title h1 {
+            color: var(--primary);
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .notification {
+            position: relative;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .card-icon.appointments {
+            background-color: #4CAF50;
+        }
+        
+        .card-icon.prescriptions {
+            background-color: #2196F3;
+        }
+        
+        .card-icon.messages {
+            background-color: #FF9800;
+        }
+        
+        .card-icon.records {
+            background-color: #9C27B0;
+        }
+        
+        .card h3 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .card p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* Upcoming Appointments */
+        .section-title {
+            margin: 20px 0;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .appointments-table {
+            width: 100%;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        th {
+            background-color: var(--light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status.confirmed {
+            background-color: #E8F5E9;
+            color: #4CAF50;
+        }
+        
+        .status.pending {
+            background-color: #FFF8E1;
+            color: #FFA000;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #004d99;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Chat UI Styles */
+        .chat-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            height: 520px;
+            overflow: hidden;
+            border: 1px solid var(--gray);
+            margin-top: 20px;
+        }
+        .chat-sidebar {
+            border-right: 1px solid var(--gray);
+            background: #fdfdfd;
+            overflow-y: auto;
+        }
+        .chat-doctors-list-title {
+            padding: 15px;
+            border-bottom: 1px solid var(--gray);
+            font-size: 1rem;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        .chat-doctor-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .chat-doctor-item:hover {
+            background: #f0f7ff;
+        }
+        .chat-doctor-item.active {
+            background: #e1f5fe;
+            border-left: 4px solid var(--primary);
+        }
+        .chat-doctor-item img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+        .chat-doctor-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-doctor-name {
+            font-weight: 600;
+            font-size: 0.88rem;
+        }
+        .chat-doctor-dept {
+            font-size: 0.72rem;
+            color: #666;
+        }
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: #fafafa;
+        }
+        .chat-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--gray);
+            font-weight: bold;
+            background: #fff;
+            color: var(--secondary);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #f5f7fa;
+        }
+        .chat-message-bubble {
+            max-width: 70%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            line-height: 1.4;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .chat-message-bubble.sent {
+            align-self: flex-end;
+            background-color: var(--primary);
+            color: white;
+            border-bottom-right-radius: 2px;
+        }
+        .chat-message-bubble.received {
+            align-self: flex-start;
+            background-color: white;
+            color: #333;
+            border-bottom-left-radius: 2px;
+            border: 1px solid #eaeaea;
+        }
+        .chat-time {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.7);
+            margin-top: 4px;
+            text-align: right;
+            align-self: flex-end;
+        }
+        .chat-message-bubble.received .chat-time {
+            color: #888;
+        }
+        .chat-send-form {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid var(--gray);
+            background: white;
+            gap: 10px;
+        }
+        .chat-input-message {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--gray);
+            border-radius: 5px;
+            outline: none;
+            font-size: 0.9rem;
+            transition: border-color 0.3s;
+        }
+        .chat-input-message:focus {
+            border-color: var(--primary);
+        }
+        .chat-send-form button {
+            width: 90px;
+            padding: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 0 !important;
+        }
+        .notification-toast {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #2c3e50;
+            color: white;
+            padding: 14px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.88rem;
+            border-left: 5px solid var(--accent);
+            animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Patient" class="profile-img">
+                <h3>Sarah Johnson</h3>
+                <p>Patient ID: PA789456</p>
+            </div>
+            
+            <div class="nav-menu">
+                <div class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-prescription-bottle-alt"></i>
+                    <span>Prescriptions</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Medical Records</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-comment-medical"></i>
+                    <span>Messages</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Profile</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div class="page-title">
+                    <h1>Patient Dashboard</h1>
+                    <p>Welcome back...</p>
+                </div>
+                <div class="user-actions">
+                    <div class="notification">
+                        <i class="fas fa-bell fa-lg"></i>
+                        <span class="notification-badge">0</span>
+                    </div>
+                    <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="User" style="width:40px;height:40px;border-radius:50%;">
+                </div>
+            </div>
+            
+            <!-- SECTION 1: DASHBOARD -->
+            <div id="section-dashboard" class="content-section">
+                <!-- Dashboard Cards -->
+                <div class="dashboard-cards" id="dashboard-cards-container">
+                    <!-- Dynamic Cards -->
+                </div>
+                
+                <!-- Upcoming Appointments -->
+                <div class="section-title">
+                    <h2>Upcoming Appointments</h2>
+                    <button class="btn btn-outline" onclick="goToAppointPage()">Schedule New</button>
+                </div>
+                
+                <div class="appointments-table">
+                    <table id="upcoming-appointments-table">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Doctor</th>
+                                <th>Department</th>
+                                <th>Status</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamic Rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION 2: APPOINTMENTS -->
+            <div id="section-appointments" class="content-section" style="display:none;">
+                <div class="section-title">
+                    <h2>Appointment History</h2>
+                    <button class="btn btn-primary" onclick="goToAppointPage()">Schedule New</button>
+                </div>
+                <div class="appointments-table">
+                    <table id="all-appointments-table">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Doctor</th>
+                                <th>Department</th>
+                                <th>Status</th>
+                                <th>Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamic Rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION 3: PRESCRIPTIONS -->
+            <div id="section-prescriptions" class="content-section" style="display:none;">
+                <div class="section-title">
+                    <h2>Active Prescriptions</h2>
+                </div>
+                <div class="appointments-table">
+                    <table id="prescriptions-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Medication</th>
+                                <th>Dosage</th>
+                                <th>Frequency</th>
+                                <th>Duration</th>
+                                <th>Doctor</th>
+                                <th>Instructions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamic Rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION 4: MEDICAL RECORDS -->
+            <div id="section-records" class="content-section" style="display:none;">
+                <div class="section-title">
+                    <h2>Your Medical Records</h2>
+                </div>
+                <div id="medical-records-list" style="display: flex; flex-direction: column; gap: 15px;">
+                    <!-- Dynamic Records -->
+                </div>
+            </div>
+
+            <!-- SECTION 5: MESSAGES (REAL-TIME CHAT) -->
+            <div id="section-messages" class="content-section" style="display:none;">
+                <div class="section-title">
+                    <h2>Doctor Consultation Messaging</h2>
+                </div>
+                <div class="chat-container">
+                    <div class="chat-sidebar">
+                        <div class="chat-doctors-list-title">Consultation Doctors</div>
+                        <div id="chat-doctors-list"></div>
+                    </div>
+                    <div class="chat-area">
+                        <div class="chat-header" id="chat-header">
+                            Select a doctor from the list to start chatting.
+                        </div>
+                        <div class="chat-messages" id="chat-messages-container">
+                            <!-- Chat Bubbles -->
+                        </div>
+                        <form class="chat-send-form" id="chat-send-form">
+                            <input type="text" class="chat-input-message" id="chat-input-message" placeholder="Type a message..." disabled>
+                            <button type="submit" class="btn btn-primary" id="chat-send-btn" disabled>Send</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 6: PROFILE -->
+            <div id="section-profile" class="content-section" style="display:none;">
+                <div class="section-title">
+                    <h2>My Profile Info</h2>
+                </div>
+                <div class="appointments-table" style="padding: 25px; background: white; border-radius: 10px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;" id="profile-details-grid">
+                        <!-- Dynamic details -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 7: SETTINGS -->
+            <div id="section-settings" class="content-section" style="display:none;">
+                <div class="section-title">
+                    <h2>Settings</h2>
+                </div>
+                <div class="appointments-table" style="padding: 25px; background: white; border-radius: 10px;">
+                    <p style="color: #666; margin-bottom: 20px;">Manage your system settings and interface preferences.</p>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="settings-notifications" checked> Receive real-time push alerts
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="settings-email" checked> Email notifications for updates
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let allAppointments = [];
+        let allPrescriptions = [];
+        let allDoctors = [];
+        let activeDoctorId = null;
+
+        function goToAppointPage() {
+            window.location.href = 'appoint.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'multirole.html?role=patient';
+                return;
+            }
+
+            // Fetch patient profile
+            try {
+                const userRes = await fetch('/api/auth/me', {
+                    headers: { 'auth-token': token }
+                });
+                if (userRes.ok) {
+                    currentUser = await userRes.json();
+                    updateProfileUI();
+                } else {
+                    localStorage.removeItem('token');
+                    window.location.href = 'multirole.html?role=patient';
+                    return;
+                }
+            } catch (err) {
+                console.error('Error fetching patient profile:', err);
+            }
+
+            // Setup EventSource for Real-time SSE Alerts
+            setupSSE(token);
+
+            // Fetch and load all data
+            await loadDashboardData();
+
+            // Set up Sidebar Navigation view switching
+            setupNavigation();
+
+            // Set up Chat handler
+            setupChat(token);
+        });
+
+        function updateProfileUI() {
+            // Update sidebar profile card
+            document.querySelector('.profile h3').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+            document.querySelector('.profile p').textContent = `Patient ID: ${currentUser.id}`;
+            
+            // Choose dynamic portrait based on gender/name
+            let avatarUrl = 'https://randomuser.me/api/portraits/women/65.jpg'; // default woman
+            if (currentUser.gender === 'male' || currentUser.firstName.toLowerCase() === 'manish' || currentUser.username.toLowerCase().includes('manish')) {
+                avatarUrl = 'https://randomuser.me/api/portraits/men/32.jpg'; // male avatar
+            }
+            
+            document.querySelector('.profile img').src = avatarUrl;
+            document.querySelector('.user-actions img').src = avatarUrl;
+            
+            // Update header greetings
+            document.querySelector('.page-title p').textContent = `Welcome back, ${currentUser.firstName}!`;
+
+            // Populate profile section details
+            const grid = document.getElementById('profile-details-grid');
+            grid.innerHTML = `
+                <div><strong>First Name:</strong> <p>${currentUser.firstName}</p></div>
+                <div><strong>Last Name:</strong> <p>${currentUser.lastName}</p></div>
+                <div><strong>Username:</strong> <p>${currentUser.username}</p></div>
+                <div><strong>Email:</strong> <p>${currentUser.email || 'N/A'}</p></div>
+                <div><strong>Phone:</strong> <p>${currentUser.phone || 'N/A'}</p></div>
+                <div><strong>Date of Birth:</strong> <p>${currentUser.dob || 'N/A'}</p></div>
+                <div><strong>Gender:</strong> <p style="text-transform: capitalize;">${currentUser.gender || 'N/A'}</p></div>
+                <div><strong>Address:</strong> <p>${currentUser.address || 'N/A'}, ${currentUser.city || ''} ${currentUser.zip || ''}</p></div>
+            `;
+        }
+
+        function setupSSE(token) {
+            const es = new EventSource(`/api/realtime?token=${token}`);
+            
+            es.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.type === 'connected') {
+                    console.log('Real-time EventSource connected.');
+                } else if (data.type === 'appointment_status_changed') {
+                    showToast(`Appointment status updated to "${data.status}" by Dr. ${data.doctorName}!`);
+                    loadDashboardData();
+                } else if (data.type === 'prescription_added') {
+                    showToast(`New prescription prescribed: ${data.medication}!`);
+                    loadDashboardData();
+                } else if (data.type === 'record_added') {
+                    showToast(`New medical record updated: ${data.diagnosis}!`);
+                    loadDashboardData();
+                } else if (data.type === 'new_message') {
+                    if (activeDoctorId === data.senderId) {
+                        appendMessageBubble(data.senderName, data.content, data.timestamp, 'received');
+                        // Read message immediately
+                        fetch(`/api/messages?contactId=${data.senderId}`, {
+                            headers: { 'auth-token': token }
+                        });
+                    } else {
+                        showToast(`New chat message from ${data.senderName}: "${data.content.substring(0, 20)}..."`);
+                        loadDashboardData(); // update unread counters
+                    }
+                }
+            };
+
+            es.onerror = (err) => {
+                console.error('SSE connection lost. Reconnecting...');
+            };
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'notification-toast';
+            toast.innerHTML = `<i class="fas fa-bell"></i> <span>${message}</span>`;
+            document.body.appendChild(toast);
+            
+            // Remove after 6 seconds
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.5s';
+                setTimeout(() => toast.remove(), 500);
+            }, 5500);
+        }
+
+        async function loadDashboardData() {
+            const token = localStorage.getItem('token');
+            
+            // Fetch Appointments
+            try {
+                const res = await fetch('/api/appointments', { headers: { 'auth-token': token } });
+                allAppointments = res.ok ? await res.json() : [];
+                renderAppointments();
+            } catch (err) {
+                console.error(err);
+            }
+
+            // Fetch Prescriptions
+            try {
+                const res = await fetch('/api/prescriptions', { headers: { 'auth-token': token } });
+                allPrescriptions = res.ok ? await res.json() : [];
+                renderPrescriptions();
+            } catch (err) {
+                console.error(err);
+            }
+
+            // Fetch Medical Records
+            try {
+                const res = await fetch('/api/records', { headers: { 'auth-token': token } });
+                const records = res.ok ? await res.json() : [];
+                renderRecords(records);
+            } catch (err) {
+                console.error(err);
+            }
+
+            // Fetch Messages history to calculate unread counts
+            try {
+                const res = await fetch(`/api/users/doctors`, { headers: { 'auth-token': token } });
+                allDoctors = res.ok ? await res.json() : [];
+                
+                // Let's get active messages to show counts
+                let unreadCountTotal = 0;
+                for (let doc of allDoctors) {
+                    const msgRes = await fetch(`/api/messages?contactId=${doc.id}`, { headers: { 'auth-token': token } });
+                    const msgHistory = msgRes.ok ? await msgRes.json() : [];
+                    doc.unreadCount = msgHistory.filter(m => m.receiverId === currentUser.id && !m.isRead).length;
+                    unreadCountTotal += doc.unreadCount;
+                }
+                
+                // Update header notification counter and messages counter
+                document.querySelector('.notification-badge').textContent = unreadCountTotal;
+                renderDoctorsListChat();
+            } catch (err) {
+                console.error(err);
+            }
+
+            updateDashboardSummaryCards();
+        }
+
+        function updateDashboardSummaryCards() {
+            const activePresc = allPrescriptions.filter(p => p.status === 'active').length;
+            const upcomingAppts = allAppointments.filter(a => a.status === 'confirmed' || a.status === 'pending').length;
+            
+            // Render Cards
+            const container = document.getElementById('dashboard-cards-container');
+            container.innerHTML = `
+                <div class="card" onclick="switchSection('Appointments')" style="cursor:pointer;">
+                    <div class="card-icon appointments">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3>Upcoming Appointments</h3>
+                    <p>You have ${upcomingAppts} scheduled visit(s)</p>
+                    <span style="color: #4CAF50; font-size: 13px; font-weight:600; margin-top:10px; display:inline-block;">View all →</span>
+                </div>
+                
+                <div class="card" onclick="switchSection('Prescriptions')" style="cursor:pointer;">
+                    <div class="card-icon prescriptions">
+                        <i class="fas fa-prescription-bottle-alt"></i>
+                    </div>
+                    <h3>Active Prescriptions</h3>
+                    <p>${activePresc} active prescription(s)</p>
+                    <span style="color: #2196F3; font-size: 13px; font-weight:600; margin-top:10px; display:inline-block;">View all →</span>
+                </div>
+                
+                <div class="card" onclick="switchSection('Messages')" style="cursor:pointer;">
+                    <div class="card-icon messages">
+                        <i class="fas fa-comment-medical"></i>
+                    </div>
+                    <h3>Unread Messages</h3>
+                    <p>You have messages from your doctors</p>
+                    <span style="color: #FF9800; font-size: 13px; font-weight:600; margin-top:10px; display:inline-block;">Open chat →</span>
+                </div>
+                
+                <div class="card" onclick="switchSection('Medical Records')" style="cursor:pointer;">
+                    <div class="card-icon records">
+                        <i class="fas fa-file-medical"></i>
+                    </div>
+                    <h3>Medical Records</h3>
+                    <p>Access your health records</p>
+                    <span style="color: #9C27B0; font-size: 13px; font-weight:600; margin-top:10px; display:inline-block;">View files →</span>
+                </div>
+            `;
+        }
+
+        function renderAppointments() {
+            // Sort by date descending
+            allAppointments.sort((a,b) => new Date(b.dateTime) - new Date(a.dateTime));
+
+            // Populate upcoming (dashboard)
+            const upcomingTbody = document.querySelector('#upcoming-appointments-table tbody');
+            upcomingTbody.innerHTML = '';
+            
+            const upcoming = allAppointments.filter(a => a.status === 'confirmed' || a.status === 'pending');
+            
+            if (upcoming.length === 0) {
+                upcomingTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888;">No upcoming appointments found.</td></tr>`;
+            } else {
+                upcoming.forEach(appt => {
+                    const tr = document.createElement('tr');
+                    const formattedDate = new Date(appt.dateTime).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+                    tr.innerHTML = `
+                        <td><strong>${formattedDate}</strong></td>
+                        <td>Dr. ${appt.doctorName}</td>
+                        <td><span style="text-transform: capitalize;">${appt.department}</span></td>
+                        <td><span class="status ${appt.status}">${appt.status}</span></td>
+                        <td><button class="btn btn-primary" onclick="alert('Reason: ${appt.message || 'No details provided.'}')">View Note</button></td>
+                    `;
+                    upcomingTbody.appendChild(tr);
+                });
+            }
+
+            // Populate all history
+            const historyTbody = document.querySelector('#all-appointments-table tbody');
+            historyTbody.innerHTML = '';
+            if (allAppointments.length === 0) {
+                historyTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888;">No appointments scheduled yet.</td></tr>`;
+            } else {
+                allAppointments.forEach(appt => {
+                    const tr = document.createElement('tr');
+                    const formattedDate = new Date(appt.dateTime).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+                    tr.innerHTML = `
+                        <td><strong>${formattedDate}</strong></td>
+                        <td>Dr. ${appt.doctorName}</td>
+                        <td><span style="text-transform: capitalize;">${appt.department}</span></td>
+                        <td><span class="status ${appt.status}">${appt.status}</span></td>
+                        <td>${appt.message || 'N/A'}</td>
+                    `;
+                    historyTbody.appendChild(tr);
+                });
+            }
+        }
+
+        function renderPrescriptions() {
+            const tbody = document.querySelector('#prescriptions-table tbody');
+            tbody.innerHTML = '';
+
+            if (allPrescriptions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#888;">No prescriptions logged.</td></tr>`;
+            } else {
+                allPrescriptions.forEach(p => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${p.date}</td>
+                        <td><strong>${p.medication}</strong></td>
+                        <td>${p.dosage}</td>
+                        <td>${p.frequency}</td>
+                        <td>${p.duration}</td>
+                        <td>Dr. ${p.doctorName}</td>
+                        <td><em>${p.instructions || 'N/A'}</em></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        function renderRecords(records) {
+            const list = document.getElementById('medical-records-list');
+            list.innerHTML = '';
+
+            if (records.length === 0) {
+                list.innerHTML = `<div style="text-align:center; padding: 30px; background: white; border-radius: 10px; color:#888;">No medical history files logged yet.</div>`;
+            } else {
+                records.sort((a,b) => new Date(b.date) - new Date(a.date));
+                records.forEach(rec => {
+                    const card = document.createElement('div');
+                    card.style = 'padding: 20px; background: white; border-radius: 10px; border-left: 5px solid var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.05);';
+                    card.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; margin-bottom: 10px;">
+                            <h3 style="color: var(--primary); font-size: 1.1rem;">Diagnosis: ${rec.diagnosis}</h3>
+                            <span style="color:#777; font-size: 0.85rem;"><i class="fas fa-calendar-alt"></i> ${rec.date}</span>
+                        </div>
+                        <p style="margin-bottom: 8px;"><strong>Treatment Plan:</strong> ${rec.treatment}</p>
+                        ${rec.notes ? `<p style="color:#555; background:#f9f9f9; padding: 10px; border-radius: 5px; font-size:0.85rem; border-left: 3px solid #ccc;"><strong>Notes:</strong> ${rec.notes}</p>` : ''}
+                        <div style="margin-top: 10px; font-size: 0.8rem; color: #777; text-align:right;">Physician: Dr. ${rec.doctorName}</div>
+                    `;
+                    list.appendChild(card);
+                });
+            }
+        }
+
+        function setupNavigation() {
+            const navItems = document.querySelectorAll('.nav-menu .nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const name = item.querySelector('span').textContent.trim();
+                    if (name === 'Logout') {
+                        if (confirm('Are you sure you want to log out?')) {
+                            localStorage.removeItem('token');
+                            localStorage.removeItem('user');
+                            window.location.href = 'homepage.html';
+                        }
+                        return;
+                    }
+                    navItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    switchSection(name);
+                });
+            });
+        }
+
+        function switchSection(name) {
+            document.querySelectorAll('.content-section').forEach(sec => {
+                sec.style.display = 'none';
+            });
+
+            const mapping = {
+                'Dashboard': 'section-dashboard',
+                'Appointments': 'section-appointments',
+                'Prescriptions': 'section-prescriptions',
+                'Medical Records': 'section-records',
+                'Messages': 'section-messages',
+                'Profile': 'section-profile',
+                'Settings': 'section-settings'
+            };
+
+            const targetId = mapping[name];
+            if (targetId) {
+                document.getElementById(targetId).style.display = 'block';
+                const navItems = document.querySelectorAll('.nav-menu .nav-item');
+                navItems.forEach(item => {
+                    const spanText = item.querySelector('span').textContent.trim();
+                    if (spanText === name) {
+                        navItems.forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        function renderDoctorsListChat() {
+            const listContainer = document.getElementById('chat-doctors-list');
+            listContainer.innerHTML = '';
+
+            allDoctors.forEach(doc => {
+                const item = document.createElement('div');
+                item.className = 'chat-doctor-item';
+                if (activeDoctorId === doc.id) {
+                    item.className += ' active';
+                }
+                
+                const profileImg = `https://randomuser.me/api/portraits/med/men/${doc.id.charCodeAt(doc.id.length-1)%50}.jpg`;
+
+                item.innerHTML = `
+                    <img src="${profileImg}" alt="Doctor">
+                    <div class="chat-doctor-info" style="flex:1;">
+                        <span class="chat-doctor-name">Dr. ${doc.firstName} ${doc.lastName}</span>
+                        <span class="chat-doctor-dept" style="text-transform: capitalize;">${doc.department}</span>
+                    </div>
+                    ${doc.unreadCount > 0 ? `<span style="background: red; color:white; border-radius: 50%; width: 18px; height: 18px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold;">${doc.unreadCount}</span>` : ''}
+                `;
+
+                item.onclick = () => {
+                    activeDoctorId = doc.id;
+                    document.querySelectorAll('.chat-doctor-item').forEach(el => el.classList.remove('active'));
+                    item.classList.add('active');
+                    openConversation(doc);
+                };
+
+                listContainer.appendChild(item);
+            });
+        }
+
+        async function openConversation(doctor) {
+            const token = localStorage.getItem('token');
+            const header = document.getElementById('chat-header');
+            header.innerHTML = `
+                <div style="display:flex; align-items:center; gap: 10px;">
+                    <img src="https://randomuser.me/api/portraits/med/men/${doctor.id.charCodeAt(doctor.id.length-1)%50}.jpg" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">
+                    <div>
+                        <div style="font-weight:bold;">Dr. ${doctor.firstName} ${doctor.lastName}</div>
+                        <div style="font-size:0.75rem; color:#666; font-weight:normal; text-transform:capitalize;">Specialist: ${doctor.department}</div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('chat-input-message').disabled = false;
+            document.getElementById('chat-send-btn').disabled = false;
+
+            try {
+                const res = await fetch(`/api/messages?contactId=${doctor.id}`, { headers: { 'auth-token': token } });
+                const history = res.ok ? await res.json() : [];
+                
+                const box = document.getElementById('chat-messages-container');
+                box.innerHTML = '';
+
+                if (history.length === 0) {
+                    box.innerHTML = `<div style="text-align:center; color:#999; margin:auto; font-size:0.85rem;">No messages exchanged yet. Send a message to start conversation!</div>`;
+                } else {
+                    history.forEach(msg => {
+                        const type = msg.senderId === currentUser.id ? 'sent' : 'received';
+                        appendMessageBubble(msg.senderName, msg.content, msg.timestamp, type);
+                    });
+                }
+                
+                doctor.unreadCount = 0;
+                renderDoctorsListChat();
+                const unreadTotal = allDoctors.reduce((s,d) => s + d.unreadCount, 0);
+                document.querySelector('.notification-badge').textContent = unreadTotal;
+                
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function appendMessageBubble(name, content, timestamp, type) {
+            const box = document.getElementById('chat-messages-container');
+            
+            if (box.innerHTML.includes("No messages exchanged yet")) {
+                box.innerHTML = '';
+            }
+
+            const formattedTime = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const bubble = document.createElement('div');
+            bubble.className = `chat-message-bubble ${type}`;
+            bubble.innerHTML = `
+                <div style="font-size: 0.72rem; opacity: 0.85; margin-bottom: 2px; font-weight: 600;">${type === 'sent' ? 'You' : name}</div>
+                <div style="word-break: break-word;">${content}</div>
+                <div class="chat-time">${formattedTime}</div>
+            `;
+            box.appendChild(bubble);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function setupChat(token) {
+            const form = document.getElementById('chat-send-form');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!activeDoctorId) return;
+
+                const input = document.getElementById('chat-input-message');
+                const content = input.value.trim();
+                if (!content) return;
+
+                const now = new Date().toISOString();
+                appendMessageBubble("You", content, now, 'sent');
+                input.value = '';
+
+                try {
+                    const res = await fetch('/api/messages', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'auth-token': token
+                        },
+                        body: JSON.stringify({
+                            receiverId: activeDoctorId,
+                            content: content
+                        })
+                    });
+                    
+                    if (!res.ok) {
+                        console.error('Failed to deliver message.');
+                    }
+                } catch (err) {
+                    console.error('Message transmission error:', err);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
