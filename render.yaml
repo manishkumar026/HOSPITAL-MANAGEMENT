@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: hospital-management-system
+    env: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: DATABASE_PATH
+        value: /var/data/database.json
+    disk:
+      name: hospital-db-disk
+      mountPath: /var/data
+      sizeGB: 1

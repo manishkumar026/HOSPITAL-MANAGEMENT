@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const DB_PATH = path.join(__dirname, 'database.json');
+const DB_PATH = process.env.DATABASE_PATH || path.join(__dirname, 'database.json');
 
 const INITIAL_DB = {
   users: [
