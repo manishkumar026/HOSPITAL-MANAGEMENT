@@ -1,7 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+const { MongoClient } = require('mongodb');
 
-const DB_PATH = process.env.DATABASE_PATH || path.join(__dirname, 'database.json');
+const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/hospital';
+const client = new MongoClient(uri);
+
+let dbInstance = null;
 
 const INITIAL_DB = {
   users: [
@@ -59,86 +61,107 @@ const INITIAL_DB = {
       phone: '555-019-2834',
       department: 'orthopedics'
     }
-  ],
-  appointments: [],
-  prescriptions: [],
-  messages: [],
-  records: []
+  ]
 };
 
-function readDb() {
+async function getDb() {
+  if (dbInstance) return dbInstance;
   try {
-    if (!fs.existsSync(DB_PATH)) {
-      writeDb(INITIAL_DB);
-      return INITIAL_DB;
-    }
-    const raw = fs.readFileSync(DB_PATH, 'utf8');
-    return JSON.parse(raw);
-  } catch (error) {
-    console.error('Error reading database file, returning initial db:', error);
-    return INITIAL_DB;
+    await client.connect();
+    dbInstance = client.db();
+    console.log('Successfully connected to MongoDB');
+    await seedInitialDb(dbInstance);
+    return dbInstance;
+  } catch (err) {
+    console.error('Failed to connect to MongoDB:', err);
+    throw err;
   }
 }
 
-function writeDb(data) {
-  try {
-    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), 'utf8');
-    return true;
-  } catch (error) {
-    console.error('Error writing database file:', error);
-    return false;
+async function seedInitialDb(db) {
+  const usersCollection = db.collection('users');
+  const count = await usersCollection.countDocuments();
+  if (count === 0) {
+    console.log("Database is empty, seeding initial admin and doctors...");
+    await usersCollection.insertMany(INITIAL_DB.users);
   }
 }
 
 // Helper query functions
 const dbHelper = {
-  getUsers: () => readDb().users,
-  getUserById: (id) => readDb().users.find(u => u.id === id),
-  getUserByUsernameOrEmail: (identifier) => {
+  getUsers: async () => {
+    const db = await getDb();
+    return await db.collection('users').find({}).toArray();
+  },
+
+  getUserById: async (id) => {
+    const db = await getDb();
+    return await db.collection('users').findOne({ id });
+  },
+
+  getUserByUsernameOrEmail: async (identifier) => {
     const cleanId = identifier.trim().toLowerCase();
-    return readDb().users.find(u => 
-      u.username.toLowerCase() === cleanId || 
-      (u.email && u.email.toLowerCase() === cleanId)
-    );
+    const db = await getDb();
+    return await db.collection('users').findOne({
+      $or: [
+        { username: { $regex: new RegExp('^' + cleanId + '$', 'i') } },
+        { email: { $regex: new RegExp('^' + cleanId + '$', 'i') } }
+      ]
+    });
   },
-  getUserByEmail: (email) => {
+
+  getUserByEmail: async (email) => {
     const cleanEmail = email.trim().toLowerCase();
-    return readDb().users.find(u => u.email && u.email.toLowerCase() === cleanEmail);
+    const db = await getDb();
+    return await db.collection('users').findOne({
+      email: { $regex: new RegExp('^' + cleanEmail + '$', 'i') }
+    });
   },
-  getUserByUsername: (username) => readDb().users.find(u => u.username.toLowerCase() === username.toLowerCase()),
+
+  getUserByUsername: async (username) => {
+    const db = await getDb();
+    return await db.collection('users').findOne({
+      username: { $regex: new RegExp('^' + username + '$', 'i') }
+    });
+  },
   
-  createUser: (userData) => {
-    const db = readDb();
+  createUser: async (userData) => {
+    const db = await getDb();
     const id = 'PA_' + Math.random().toString(36).substr(2, 9).toUpperCase();
     const newUser = { id, role: 'patient', ...userData };
-    db.users.push(newUser);
-    writeDb(db);
+    await db.collection('users').insertOne(newUser);
     return newUser;
   },
 
-  createUserWithRole: (userData) => {
-    const db = readDb();
+  createUserWithRole: async (userData) => {
+    const db = await getDb();
     let prefix = 'PA_';
     if (userData.role === 'doctor') prefix = 'DOC_';
     else if (userData.role === 'admin') prefix = 'ADM_';
     const id = prefix + Math.random().toString(36).substr(2, 9).toUpperCase();
     const newUser = { id, ...userData };
-    db.users.push(newUser);
-    writeDb(db);
+    await db.collection('users').insertOne(newUser);
     return newUser;
   },
 
-  getDoctors: () => readDb().users.filter(u => u.role === 'doctor'),
-
-  getAppointments: (userId, role) => {
-    const appointments = readDb().appointments;
-    if (role === 'admin') return appointments;
-    if (role === 'doctor') return appointments.filter(a => a.doctorId === userId);
-    return appointments.filter(a => a.patientId === userId);
+  getDoctors: async () => {
+    const db = await getDb();
+    return await db.collection('users').find({ role: 'doctor' }).toArray();
   },
 
-  createAppointment: (apptData) => {
-    const db = readDb();
+  getAppointments: async (userId, role) => {
+    const db = await getDb();
+    if (role === 'admin') {
+      return await db.collection('appointments').find({}).toArray();
+    }
+    if (role === 'doctor') {
+      return await db.collection('appointments').find({ doctorId: userId }).toArray();
+    }
+    return await db.collection('appointments').find({ patientId: userId }).toArray();
+  },
+
+  createAppointment: async (apptData) => {
+    const db = await getDb();
     const id = 'AP_' + Math.random().toString(36).substr(2, 9).toUpperCase();
     const newAppt = {
       id,
@@ -146,31 +169,29 @@ const dbHelper = {
       status: 'pending',
       ...apptData
     };
-    db.appointments.push(newAppt);
-    writeDb(db);
+    await db.collection('appointments').insertOne(newAppt);
     return newAppt;
   },
 
-  updateAppointmentStatus: (id, status) => {
-    const db = readDb();
-    const appt = db.appointments.find(a => a.id === id);
-    if (appt) {
-      appt.status = status;
-      writeDb(db);
-      return appt;
+  updateAppointmentStatus: async (id, status) => {
+    const db = await getDb();
+    await db.collection('appointments').updateOne({ id }, { $set: { status } });
+    return await db.collection('appointments').findOne({ id });
+  },
+
+  getPrescriptions: async (userId, role) => {
+    const db = await getDb();
+    if (role === 'admin') {
+      return await db.collection('prescriptions').find({}).toArray();
     }
-    return null;
+    if (role === 'doctor') {
+      return await db.collection('prescriptions').find({ doctorId: userId }).toArray();
+    }
+    return await db.collection('prescriptions').find({ patientId: userId }).toArray();
   },
 
-  getPrescriptions: (userId, role) => {
-    const prescriptions = readDb().prescriptions;
-    if (role === 'admin') return prescriptions;
-    if (role === 'doctor') return prescriptions.filter(p => p.doctorId === userId);
-    return prescriptions.filter(p => p.patientId === userId);
-  },
-
-  createPrescription: (prescData) => {
-    const db = readDb();
+  createPrescription: async (prescData) => {
+    const db = await getDb();
     const id = 'PR_' + Math.random().toString(36).substr(2, 9).toUpperCase();
     const newPresc = {
       id,
@@ -178,18 +199,22 @@ const dbHelper = {
       status: 'active',
       ...prescData
     };
-    db.prescriptions.push(newPresc);
-    writeDb(db);
+    await db.collection('prescriptions').insertOne(newPresc);
     return newPresc;
   },
 
-  getMessages: (userId) => {
-    const messages = readDb().messages;
-    return messages.filter(m => m.senderId === userId || m.receiverId === userId);
+  getMessages: async (userId) => {
+    const db = await getDb();
+    return await db.collection('messages').find({
+      $or: [
+        { senderId: userId },
+        { receiverId: userId }
+      ]
+    }).toArray();
   },
 
-  createMessage: (msgData) => {
-    const db = readDb();
+  createMessage: async (msgData) => {
+    const db = await getDb();
     const id = 'MSG_' + Math.random().toString(36).substr(2, 9).toUpperCase();
     const newMsg = {
       id,
@@ -197,57 +222,53 @@ const dbHelper = {
       isRead: false,
       ...msgData
     };
-    db.messages.push(newMsg);
-    writeDb(db);
+    await db.collection('messages').insertOne(newMsg);
     return newMsg;
   },
 
-  markMessagesAsRead: (userId, contactId) => {
-    const db = readDb();
-    let updated = false;
-    db.messages.forEach(m => {
-      if (m.senderId === contactId && m.receiverId === userId && !m.isRead) {
-        m.isRead = true;
-        updated = true;
-      }
-    });
-    if (updated) {
-      writeDb(db);
-    }
+  markMessagesAsRead: async (userId, contactId) => {
+    const db = await getDb();
+    await db.collection('messages').updateMany(
+      { senderId: contactId, receiverId: userId, isRead: false },
+      { $set: { isRead: true } }
+    );
   },
 
-  getMedicalRecords: (patientId) => {
-    const records = readDb().records;
-    return records.filter(r => r.patientId === patientId);
+  getMedicalRecords: async (patientId) => {
+    const db = await getDb();
+    return await db.collection('records').find({ patientId }).toArray();
   },
 
-  createMedicalRecord: (recData) => {
-    const db = readDb();
+  createMedicalRecord: async (recData) => {
+    const db = await getDb();
     const id = 'REC_' + Math.random().toString(36).substr(2, 9).toUpperCase();
     const newRec = {
       id,
       date: new Date().toISOString().split('T')[0],
       ...recData
     };
-    db.records.push(newRec);
-    writeDb(db);
+    await db.collection('records').insertOne(newRec);
     return newRec;
   },
 
-  deleteUser: (id) => {
-    const db = readDb();
-    const idx = db.users.findIndex(u => u.id === id);
-    if (idx !== -1) {
-      const removed = db.users.splice(idx, 1)[0];
-      writeDb(db);
-      return removed;
+  deleteUser: async (id) => {
+    const db = await getDb();
+    const user = await db.collection('users').findOne({ id });
+    if (user) {
+      await db.collection('users').deleteOne({ id });
+      return user;
     }
     return null;
   },
 
-  resetDb: () => {
-    writeDb(INITIAL_DB);
-    return INITIAL_DB;
+  resetDb: async () => {
+    const db = await getDb();
+    await db.collection('users').deleteMany({});
+    await db.collection('appointments').deleteMany({});
+    await db.collection('prescriptions').deleteMany({});
+    await db.collection('messages').deleteMany({});
+    await db.collection('records').deleteMany({});
+    await db.collection('users').insertMany(INITIAL_DB.users);
   }
 };
 

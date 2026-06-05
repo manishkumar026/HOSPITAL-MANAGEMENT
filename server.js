@@ -39,8 +39,8 @@ function sendSseToUser(userId, type, payload) {
 }
 
 // Send real-time SSE event to all users of a specific role (e.g. 'doctor', 'admin')
-function sendSseToRole(role, type, payload) {
-  const allUsers = db.getUsers();
+async function sendSseToRole(role, type, payload) {
+  const allUsers = await db.getUsers();
   allUsers.forEach(user => {
     if (user.role === role) {
       sendSseToUser(user.id, type, payload);
@@ -187,13 +187,13 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        const existing = db.getUserByUsername(body.username);
+        const existing = await db.getUserByUsername(body.username);
         if (existing) {
           sendJson(res, 400, { error: 'Username already exists' });
           return;
         }
 
-        const newUser = db.createUser(body);
+        const newUser = await db.createUser(body);
         const token = generateToken(newUser.id, newUser.role);
         sendJson(res, 201, { token, user: { id: newUser.id, username: newUser.username, role: newUser.role, firstName: newUser.firstName, lastName: newUser.lastName } });
         return;
@@ -207,7 +207,7 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        const user = db.getUserByUsernameOrEmail(body.username);
+        const user = await db.getUserByUsernameOrEmail(body.username);
         if (!user || user.password !== body.password) {
           sendJson(res, 400, { error: 'Invalid username or password' });
           return;
@@ -226,12 +226,12 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        let user = db.getUserByEmail(body.email);
+        let user = await db.getUserByEmail(body.email);
         if (!user) {
           // Register a new patient account dynamically
           const emailPrefix = body.email.split('@')[0];
           const firstName = emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1);
-          user = db.createUser({
+          user = await db.createUser({
             username: emailPrefix,
             password: 'google_oauth_mock_bypass',
             firstName: firstName,
@@ -247,7 +247,7 @@ const server = http.createServer(async (req, res) => {
 
       // Reset Database (Public for development / testing)
       if (pathname === '/api/admin/reset-db' && req.method === 'POST') {
-        db.resetDb();
+        await db.resetDb();
         sendJson(res, 200, { message: 'Database reset successfully' });
         return;
       }
@@ -263,7 +263,7 @@ const server = http.createServer(async (req, res) => {
 
       // Get Current User Profile
       if (pathname === '/api/auth/me' && req.method === 'GET') {
-        const user = db.getUserById(auth.userId);
+        const user = await db.getUserById(auth.userId);
         if (!user) {
           sendJson(res, 404, { error: 'User not found' });
           return;
@@ -276,7 +276,7 @@ const server = http.createServer(async (req, res) => {
 
       // Get Doctors List
       if (pathname === '/api/users/doctors' && req.method === 'GET') {
-        const doctors = db.getDoctors().map(d => ({
+        const doctors = (await db.getDoctors()).map(d => ({
           id: d.id,
           firstName: d.firstName,
           lastName: d.lastName,
@@ -294,7 +294,7 @@ const server = http.createServer(async (req, res) => {
           sendJson(res, 403, { error: 'Forbidden' });
           return;
         }
-        const patients = db.getUsers().filter(u => u.role === 'patient').map(p => ({
+        const patients = (await db.getUsers()).filter(u => u.role === 'patient').map(p => ({
           id: p.id,
           firstName: p.firstName,
           lastName: p.lastName,
@@ -316,7 +316,7 @@ const server = http.createServer(async (req, res) => {
           sendJson(res, 403, { error: 'Forbidden' });
           return;
         }
-        const users = db.getUsers().map(({ password, ...safeUser }) => safeUser);
+        const users = (await db.getUsers()).map(({ password, ...safeUser }) => safeUser);
         sendJson(res, 200, users);
         return;
       }
@@ -332,12 +332,12 @@ const server = http.createServer(async (req, res) => {
           sendJson(res, 400, { error: 'Missing required fields' });
           return;
         }
-        const existing = db.getUserByUsername(body.username);
+        const existing = await db.getUserByUsername(body.username);
         if (existing) {
           sendJson(res, 400, { error: 'Username already exists' });
           return;
         }
-        const newUser = db.createUserWithRole(body);
+        const newUser = await db.createUserWithRole(body);
         const { password, ...safeUser } = newUser;
         sendJson(res, 201, safeUser);
         return;
@@ -358,7 +358,7 @@ const server = http.createServer(async (req, res) => {
           sendJson(res, 400, { error: 'Cannot delete yourself' });
           return;
         }
-        const deleted = db.deleteUser(body.userId);
+        const deleted = await db.deleteUser(body.userId);
         if (deleted) {
           sendJson(res, 200, { message: 'User deleted successfully' });
         } else {
@@ -369,7 +369,7 @@ const server = http.createServer(async (req, res) => {
 
       // Get Appointments
       if (pathname === '/api/appointments' && req.method === 'GET') {
-        const list = db.getAppointments(auth.userId, auth.role);
+        const list = await db.getAppointments(auth.userId, auth.role);
         sendJson(res, 200, list);
         return;
       }
@@ -382,13 +382,13 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        const doctor = db.getUserById(body.doctorId);
+        const doctor = await db.getUserById(body.doctorId);
         if (!doctor || doctor.role !== 'doctor') {
           sendJson(res, 404, { error: 'Doctor not found' });
           return;
         }
 
-        const patient = db.getUserById(auth.userId);
+        const patient = await db.getUserById(auth.userId);
 
         const apptData = {
           patientId: auth.userId,
@@ -404,7 +404,7 @@ const server = http.createServer(async (req, res) => {
           message: body.message || ''
         };
 
-        const newAppt = db.createAppointment(apptData);
+        const newAppt = await db.createAppointment(apptData);
 
         // Notify Doctor and Admin in Real-Time
         sendSseToUser(body.doctorId, 'appointment_booked', {
@@ -415,7 +415,7 @@ const server = http.createServer(async (req, res) => {
           status: newAppt.status
         });
 
-        sendSseToRole('admin', 'appointment_booked', {
+        await sendSseToRole('admin', 'appointment_booked', {
           appointmentId: newAppt.id,
           patientName: apptData.patientName,
           doctorName: apptData.doctorName,
@@ -441,7 +441,7 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        const updated = db.updateAppointmentStatus(body.appointmentId, body.status);
+        const updated = await db.updateAppointmentStatus(body.appointmentId, body.status);
         if (!updated) {
           sendJson(res, 404, { error: 'Appointment not found' });
           return;
@@ -456,7 +456,7 @@ const server = http.createServer(async (req, res) => {
         });
 
         // Notify Admin and Doctor of status change
-        sendSseToRole('admin', 'appointment_status_changed', {
+        await sendSseToRole('admin', 'appointment_status_changed', {
           appointmentId: updated.id,
           status: updated.status,
           patientName: updated.patientName,
@@ -474,7 +474,7 @@ const server = http.createServer(async (req, res) => {
 
       // Get Prescriptions
       if (pathname === '/api/prescriptions' && req.method === 'GET') {
-        const list = db.getPrescriptions(auth.userId, auth.role);
+        const list = await db.getPrescriptions(auth.userId, auth.role);
         sendJson(res, 200, list);
         return;
       }
@@ -492,15 +492,15 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        const patient = db.getUserById(body.patientId);
+        const patient = await db.getUserById(body.patientId);
         if (!patient || patient.role !== 'patient') {
           sendJson(res, 404, { error: 'Patient not found' });
           return;
         }
 
-        const doctor = db.getUserById(auth.userId);
+        const doctor = await db.getUserById(auth.userId);
 
-        const newPresc = db.createPrescription({
+        const newPresc = await db.createPrescription({
           patientId: body.patientId,
           patientName: `${patient.firstName} ${patient.lastName}`,
           doctorId: auth.userId,
@@ -533,7 +533,7 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        const list = db.getMedicalRecords(patientId);
+        const list = await db.getMedicalRecords(patientId);
         sendJson(res, 200, list);
         return;
       }
@@ -551,15 +551,15 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        const patient = db.getUserById(body.patientId);
+        const patient = await db.getUserById(body.patientId);
         if (!patient || patient.role !== 'patient') {
           sendJson(res, 404, { error: 'Patient not found' });
           return;
         }
 
-        const doctor = db.getUserById(auth.userId);
+        const doctor = await db.getUserById(auth.userId);
 
-        const newRec = db.createMedicalRecord({
+        const newRec = await db.createMedicalRecord({
           patientId: body.patientId,
           patientName: `${patient.firstName} ${patient.lastName}`,
           doctorId: auth.userId,
@@ -589,13 +589,13 @@ const server = http.createServer(async (req, res) => {
         }
 
         // Retrieve messages, filter for this specific conversation, and mark unread messages as read
-        const list = db.getMessages(auth.userId);
+        const list = await db.getMessages(auth.userId);
         const chatHistory = list.filter(m => 
           (m.senderId === auth.userId && m.receiverId === contactId) ||
           (m.senderId === contactId && m.receiverId === auth.userId)
         );
 
-        db.markMessagesAsRead(auth.userId, contactId);
+        await db.markMessagesAsRead(auth.userId, contactId);
 
         sendJson(res, 200, chatHistory);
         return;
@@ -609,14 +609,14 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        const sender = db.getUserById(auth.userId);
-        const receiver = db.getUserById(body.receiverId);
+        const sender = await db.getUserById(auth.userId);
+        const receiver = await db.getUserById(body.receiverId);
         if (!receiver) {
           sendJson(res, 404, { error: 'Receiver not found' });
           return;
         }
 
-        const newMsg = db.createMessage({
+        const newMsg = await db.createMessage({
           senderId: auth.userId,
           senderName: `${sender.firstName} ${sender.lastName}`,
           receiverId: body.receiverId,
