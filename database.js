@@ -1,6 +1,15 @@
 const fs = require('fs');
 const path = require('path');
 const { MongoClient } = require('mongodb');
+const crypto = require('crypto');
+
+// Password hashing helpers
+function hashPassword(password, salt) {
+  const userSalt = salt || crypto.randomBytes(16).toString('hex');
+  const hash = crypto.pbkdf2Sync(password, userSalt, 1000, 64, 'sha512').toString('hex');
+  return { salt: userSalt, hash };
+}
+
 
 // Custom environment variables loader for .env
 function loadEnv() {
@@ -168,6 +177,15 @@ async function seedInitialDb(db) {
 
 // Helper query functions
 const dbHelper = {
+  verifyPassword: (inputPassword, user) => {
+    if (!user) return false;
+    if (!user.salt) {
+      return inputPassword === user.password;
+    }
+    const { hash } = hashPassword(inputPassword, user.salt);
+    return hash === user.password;
+  },
+
   getUsers: async () => {
     await getDb();
     if (useJsonDb) {
@@ -235,7 +253,8 @@ const dbHelper = {
   createUser: async (userData) => {
     await getDb();
     const id = 'PA_' + Math.random().toString(36).substr(2, 9).toUpperCase();
-    const newUser = { id, role: 'patient', ...userData };
+    const { salt, hash } = hashPassword(userData.password);
+    const newUser = { id, role: 'patient', ...userData, password: hash, salt };
     if (useJsonDb) {
       const db = readJsonDb();
       db.users.push(newUser);
@@ -253,7 +272,8 @@ const dbHelper = {
     if (userData.role === 'doctor') prefix = 'DOC_';
     else if (userData.role === 'admin') prefix = 'ADM_';
     const id = prefix + Math.random().toString(36).substr(2, 9).toUpperCase();
-    const newUser = { id, ...userData };
+    const { salt, hash } = hashPassword(userData.password);
+    const newUser = { id, ...userData, password: hash, salt };
     if (useJsonDb) {
       const db = readJsonDb();
       db.users.push(newUser);

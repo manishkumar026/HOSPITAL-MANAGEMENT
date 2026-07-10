@@ -245,7 +245,7 @@ const server = http.createServer(async (req, res) => {
         }
 
         const user = await db.getUserByUsernameOrEmail(body.username);
-        if (!user || user.password !== body.password) {
+        if (!user || !db.verifyPassword(body.password, user)) {
           sendJson(res, 400, { error: 'Invalid username or password' });
           return;
         }

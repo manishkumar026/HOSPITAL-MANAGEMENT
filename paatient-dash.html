@@ -597,6 +597,7 @@
                                 <th>Duration</th>
                                 <th>Doctor</th>
                                 <th>Instructions</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -953,7 +954,7 @@
             tbody.innerHTML = '';
 
             if (allPrescriptions.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#888;">No prescriptions logged.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:#888;">No prescriptions logged.</td></tr>`;
             } else {
                 allPrescriptions.forEach(p => {
                     const tr = document.createElement('tr');
@@ -965,10 +966,87 @@
                         <td>${p.duration}</td>
                         <td>Dr. ${p.doctorName}</td>
                         <td><em>${p.instructions || 'N/A'}</em></td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" onclick="exportPrescriptionPDF('${p.id}')">
+                                <i class="fas fa-file-pdf"></i> Download PDF
+                            </button>
+                        </td>
                     `;
                     tbody.appendChild(tr);
                 });
             }
+        }
+
+        function exportPrescriptionPDF(id) {
+            const presc = allPrescriptions.find(p => p.id === id);
+            if (!presc) return;
+
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Prescription_${presc.id}</title>
+                    <style>
+                        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; color: #333; line-height: 1.6; }
+                        .header { border-bottom: 2px solid #0f172a; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+                        .logo { font-size: 24px; font-weight: bold; color: #1e3a8a; }
+                        .hospital-details { text-align: right; font-size: 12px; color: #64748b; }
+                        .rx-container { font-size: 14px; margin-bottom: 30px; }
+                        .rx-row { display: flex; margin-bottom: 10px; }
+                        .rx-label { width: 150px; font-weight: bold; color: #475569; }
+                        .rx-symbol { font-size: 32px; font-weight: bold; color: #1e3a8a; margin: 20px 0; }
+                        .medication-card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+                        .medication-name { font-size: 18px; font-weight: bold; color: #0f172a; margin-bottom: 8px; }
+                        .signature-section { margin-top: 50px; display: flex; justify-content: space-between; align-items: flex-end; }
+                        .sig-line { border-top: 1px solid #94a3b8; width: 200px; text-align: center; padding-top: 5px; font-size: 12px; color: #64748b; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="logo">🏥 SANTHÉA GENERAL HOSPITAL</div>
+                        <div class="hospital-details">
+                            100 Medicare Blvd, Suite A<br>
+                            New York, NY 10001<br>
+                            Phone: (555) 019-0000
+                        </div>
+                    </div>
+                    
+                    <div class="rx-container">
+                        <div class="rx-row"><div class="rx-label">Patient Name:</div><div>${currentUser.firstName} ${currentUser.lastName}</div></div>
+                        <div class="rx-row"><div class="rx-label">Date:</div><div>${presc.date}</div></div>
+                        <div class="rx-row"><div class="rx-label">Prescription ID:</div><div>${presc.id}</div></div>
+                    </div>
+
+                    <div class="rx-symbol">Rx</div>
+
+                    <div class="medication-card">
+                        <div class="medication-name">${presc.medication}</div>
+                        <div class="rx-row"><div class="rx-label">Dosage:</div><div>${presc.dosage}</div></div>
+                        <div class="rx-row"><div class="rx-label">Frequency:</div><div>${presc.frequency}</div></div>
+                        <div class="rx-row"><div class="rx-label">Duration:</div><div>${presc.duration}</div></div>
+                        <div class="rx-row" style="margin-top:15px;"><div class="rx-label">Instructions:</div><div><em>${presc.instructions || 'Take as directed'}</em></div></div>
+                    </div>
+
+                    <div class="signature-section">
+                        <div>
+                            <div style="font-size: 12px; color: #64748b;">Issued by:</div>
+                            <div style="font-weight: bold; font-size: 14px;">Dr. ${presc.doctorName}</div>
+                        </div>
+                        <div class="sig-line">
+                            Authorized Signature
+                        </div>
+                    </div>
+
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                            setTimeout(function() { window.close(); }, 500);
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
         }
 
         function renderRecords(records) {

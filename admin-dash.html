@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MediCare - Admin Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* Custom Admin Dashboard Overrides mapping to theme.css variables */
         .container {
@@ -562,24 +563,11 @@
             <!-- SECTION 1: DASHBOARD -->
             <div id="section-dashboard" class="content-section">
                 <!-- Stats Chart -->
-                <div class="stats-container">
-                    <div class="chart-container">
+                <div class="stats-container" style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px;">
+                    <div class="chart-container" style="flex: 1.5; min-width: 320px; display: flex; flex-direction: column; background: white; border-radius: var(--border-radius); padding: 24px; box-shadow: var(--shadow-md);">
                         <h3>System Statistics</h3>
-                        <div class="custom-bar-chart">
-                            <div class="chart-bars-wrapper">
-                                <div class="chart-bar-col">
-                                    <div id="chart-bar-patients" style="width:45px; background:var(--primary); border-radius:4px 4px 0 0; transition: height 0.5s; height:0px;"></div>
-                                    <span>Patients</span>
-                                </div>
-                                <div class="chart-bar-col">
-                                    <div id="chart-bar-doctors" style="width:45px; background:var(--info); border-radius:4px 4px 0 0; transition: height 0.5s; height:0px;"></div>
-                                    <span>Doctors</span>
-                                </div>
-                                <div class="chart-bar-col">
-                                    <div id="chart-bar-appts" style="width:45px; background:var(--accent); border-radius:4px 4px 0 0; transition: height 0.5s; height:0px;"></div>
-                                    <span>Appts</span>
-                                </div>
-                            </div>
+                        <div style="position: relative; height: 220px; width: 100%; margin: auto;">
+                            <canvas id="systemStatsChart"></canvas>
                         </div>
                     </div>
                     <div class="chart-container">
@@ -811,6 +799,8 @@
         let allDoctors = [];
         let allPatients = [];
         let allAppointments = [];
+        let statsChart = null;
+        let deptChart = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('token');
@@ -984,11 +974,46 @@
                 </div>
             `;
 
-            // Chart Bars
-            const maxVal = Math.max(patCount, docCount, apptCount, 1);
-            document.getElementById('chart-bar-patients').style.height = `${(patCount / maxVal) * 150}px`;
-            document.getElementById('chart-bar-doctors').style.height = `${(docCount / maxVal) * 150}px`;
-            document.getElementById('chart-bar-appts').style.height = `${(apptCount / maxVal) * 150}px`;
+            // Render interactive Chart.js chart
+            const ctx = document.getElementById('systemStatsChart').getContext('2d');
+            if (statsChart) {
+                statsChart.destroy();
+            }
+            statsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Patients', 'Doctors', 'Appointments'],
+                    datasets: [{
+                        label: 'Total Registered',
+                        data: [patCount, docCount, apptCount],
+                        backgroundColor: [
+                            'rgba(63, 131, 248, 0.75)',
+                            'rgba(14, 116, 144, 0.75)',
+                            'rgba(156, 39, 176, 0.75)'
+                        ],
+                        borderColor: [
+                            'rgb(63, 131, 248)',
+                            'rgb(14, 116, 144)',
+                            'rgb(156, 39, 176)'
+                        ],
+                        borderWidth: 1.5,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1, precision: 0 }
+                        }
+                    }
+                }
+            });
 
             // Populate recent activity log
             const activityTbody = document.querySelector('#recent-activity-table tbody');
