@@ -3,133 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediCare Hospital - Patient Registration</title>
+    <title>Santhéa Hospital - Patient Registration</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="theme.css">
     <style>
-        /* Global Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-        
-        body {
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        /* Header Styles */
-        header {
-            background-color: #0066cc;
-            color: white;
-            padding: 1rem 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo img {
-            height: 50px;
-            margin-right: 15px;
-        }
-        
-        .logo-text h1 {
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-        }
-        
-        .logo-text p {
-            font-size: 0.8rem;
-            opacity: 0.9;
-        }
-        
-        /* Main Content */
+        /* Custom Overrides for Registration Page */
         .register-container {
             display: flex;
             min-height: calc(100vh - 120px);
             align-items: center;
             justify-content: center;
-            padding: 40px 0;
+            padding: 60px 0;
         }
         
         .register-wrapper {
             display: flex;
-            max-width: 1000px;
+            max-width: 1050px;
             width: 100%;
             background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-3d);
             overflow: hidden;
         }
         
         .register-image {
             flex: 1;
-            background-image: linear-gradient(rgba(0, 102, 204, 0.8), rgba(0, 102, 204, 0.8)), 
+            background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(79, 70, 229, 0.8) 100%), 
                               url('https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
             background-size: cover;
             background-position: center;
             color: white;
-            padding: 40px;
+            padding: 50px 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
         
         .register-image h2 {
-            font-size: 2rem;
+            font-size: 2.2rem;
             margin-bottom: 20px;
+            color: white;
+            font-weight: 800;
+            line-height: 1.25;
         }
         
         .register-image p {
-            margin-bottom: 30px;
+            margin-bottom: 35px;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.05rem;
+            line-height: 1.6;
         }
         
         .register-features {
             list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
         }
         
         .register-features li {
-            margin-bottom: 15px;
             display: flex;
             align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
         }
         
         .register-features i {
-            margin-right: 10px;
-            font-size: 1.2rem;
-            color: #ffcc00;
+            font-size: 1.25rem;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent-glow);
         }
         
         .register-form {
-            flex: 1;
+            flex: 1.25;
             padding: 50px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            background: white;
         }
         
         .register-form h2 {
-            color: #0066cc;
+            color: var(--secondary);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .register-form p.subtitle {
+            color: var(--gray-dark);
             margin-bottom: 30px;
-            text-align: center;
-            font-size: 1.8rem;
+            font-size: 0.95rem;
         }
         
         .form-group {
@@ -139,24 +104,9 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 500;
-            color: #555;
-        }
-        
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-        
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: #0066cc;
-            outline: none;
+            font-weight: 600;
+            color: var(--secondary);
+            font-size: 0.9rem;
         }
         
         .password-wrapper {
@@ -165,11 +115,16 @@
         
         .password-toggle {
             position: absolute;
-            right: 10px;
+            right: 16px;
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
-            color: #777;
+            color: var(--gray-dark);
+            transition: color 0.2s;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary);
         }
         
         .form-row {
@@ -183,81 +138,80 @@
         
         .terms {
             display: flex;
-            align-items: flex-start;
-            margin-bottom: 20px;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
         }
         
-        .terms input {
-            margin-right: 10px;
-            margin-top: 3px;
+        .terms input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 1.5px solid var(--gray);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 0;
         }
         
         .terms label {
             font-size: 0.9rem;
-            color: #555;
+            color: var(--secondary-light);
+            cursor: pointer;
         }
         
         .terms label a {
-            color: #0066cc;
+            color: var(--primary);
             text-decoration: none;
+            font-weight: 700;
         }
         
         .terms label a:hover {
             text-decoration: underline;
         }
-        
-        .btn {
-            display: inline-block;
-            background-color: #0066cc;
-            color: white;
-            padding: 12px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            text-align: center;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s;
+
+        .btn-submit {
             width: 100%;
-        }
-        
-        .btn:hover {
-            background-color: #004d99;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 700;
         }
         
         .login-link {
             text-align: center;
-            margin-top: 20px;
-            color: #555;
+            margin-top: 24px;
+            color: var(--gray-dark);
+            font-size: 0.95rem;
         }
         
         .login-link a {
-            color: #0066cc;
+            color: var(--primary);
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 700;
         }
         
         .login-link a:hover {
             text-decoration: underline;
         }
         
+        /* Progress Stepper */
         .progress-steps {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
             position: relative;
+            padding: 0 10px;
         }
         
         .progress-steps::before {
             content: '';
             position: absolute;
-            top: 15px;
+            top: 18px;
             left: 0;
             right: 0;
-            height: 2px;
-            background-color: #ddd;
+            height: 3px;
+            background-color: var(--gray);
             z-index: 1;
+            border-radius: 4px;
         }
         
         .step {
@@ -269,82 +223,189 @@
         }
         
         .step-number {
-            width: 30px;
-            height: 30px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            background-color: #ddd;
-            color: #777;
+            background-color: white;
+            border: 3px solid var(--gray);
+            color: var(--gray-dark);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            font-family: var(--font-heading);
+            box-shadow: var(--shadow-sm);
         }
         
         .step.active .step-number {
-            background-color: #0066cc;
+            background-color: var(--primary);
+            border-color: var(--primary);
             color: white;
+            box-shadow: 0 0 0 5px var(--primary-glow);
         }
         
         .step.completed .step-number {
-            background-color: #4CAF50;
+            background-color: var(--success);
+            border-color: var(--success);
             color: white;
+            box-shadow: 0 0 0 5px var(--success-glow);
         }
         
         .step-text {
             font-size: 0.8rem;
-            color: #777;
+            color: var(--gray-dark);
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
         
         .step.active .step-text {
-            color: #0066cc;
-            font-weight: 500;
+            color: var(--primary);
+            font-weight: 700;
         }
         
         .step.completed .step-text {
-            color: #4CAF50;
+            color: var(--success);
+            font-weight: 700;
         }
         
-        /* Footer */
-        footer {
-            background-color: #003366;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
+        /* Header & Footer Styling */
+        header {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .logo i {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-right: 12px;
+            filter: drop-shadow(0 4px 6px var(--primary-glow));
+        }
+        
+        .logo-text h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--secondary);
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+        
+        .logo-text p {
+            font-size: 0.78rem;
+            color: var(--gray-dark);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .back-home {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             font-size: 0.9rem;
+            padding: 10px 18px;
+            border-radius: var(--border-radius-sm);
+            background-color: var(--primary-glow);
+            transition: all 0.2s;
+        }
+
+        .back-home:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        footer {
+            background-color: var(--secondary);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 40px 0;
+            text-align: center;
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
         
         .footer-links {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
         }
         
         .footer-links a {
-            color: white;
+            color: hsl(215, 25%, 75%);
             text-decoration: none;
-            margin: 0 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: color 0.2s;
         }
         
         .footer-links a:hover {
-            text-decoration: underline;
+            color: white;
+        }
+
+        .copyright {
+            font-size: 0.85rem;
+            color: hsl(215, 15%, 60%);
         }
         
         /* Responsive Design */
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
             .register-wrapper {
                 flex-direction: column;
+                max-width: 600px;
             }
             
             .register-image {
-                display: none;
+                padding: 40px;
+                min-height: 250px;
             }
             
             .register-form {
-                padding: 30px;
+                padding: 40px 30px;
             }
-            
+        }
+
+        @media (max-width: 576px) {
+            .register-image {
+                display: none;
+            }
             .form-row {
                 flex-direction: column;
                 gap: 0;
+            }
+            .progress-steps {
+                padding: 0;
+            }
+            .step-text {
+                display: none;
+            }
+            .progress-steps::before {
+                top: 18px;
             }
         }
     </style>
@@ -353,13 +414,16 @@
     <!-- Header -->
     <header>
         <div class="container header-top">
-            <div class="logo">
-                <img src="https://via.placeholder.com/50x50" alt="MediCare Hospital Logo">
+            <a href="homepage.html" class="logo">
+                <i class="fas fa-hand-holding-medical"></i>
                 <div class="logo-text">
-                    <h1>MediCare General Hospital</h1>
-                    <p>Patient Registration</p>
+                    <h1>Santhéa Hospital</h1>
+                    <p>Compassionate Care, Advanced Medicine</p>
                 </div>
-            </div>
+            </a>
+            <a href="homepage.html" class="back-home">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
         </div>
     </header>
     
@@ -380,6 +444,7 @@
                 </div>
                 <div class="register-form">
                     <h2>Create Your Account</h2>
+                    <p class="subtitle">Complete the fields below to register as a patient.</p>
                     
                     <div class="progress-steps">
                         <div class="step active">
@@ -476,7 +541,7 @@
                             <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
                         </div>
                         
-                        <button type="submit" class="btn">Create Account</button>
+                        <button type="submit" class="btn btn-submit">Create Account</button>
                     </form>
                     
                     <div class="login-link">
@@ -496,7 +561,7 @@
                 <a href="#">Contact Us</a>
                 <a href="#">Help</a>
             </div>
-            <p>&copy; 2023 MediCare General Hospital. All Rights Reserved.</p>
+            <p class="copyright">&copy; 2026 Santhéa General Hospital. All Rights Reserved.</p>
         </div>
     </footer>
 
