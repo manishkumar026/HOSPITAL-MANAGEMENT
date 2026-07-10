@@ -874,6 +874,10 @@
             } else {
                 patientExtraBlock.style.display = 'none';
             }
+
+            // Clear credentials when switching roles so there's no confusion
+            usernameInput.value = '';
+            passwordInput.value = '';
         }
 
         // Tab button click listeners
