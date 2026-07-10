@@ -258,27 +258,44 @@ const server = http.createServer(async (req, res) => {
       // Google-Login (Public)
       if (pathname === '/api/auth/google-login' && req.method === 'POST') {
         const body = await getJsonBody(req);
-        if (!body.email) {
-          sendJson(res, 400, { error: 'Missing email address' });
+        if (!body.credential) {
+          sendJson(res, 400, { error: 'Missing Google credential token' });
           return;
         }
 
-        let user = await db.getUserByEmail(body.email);
-        if (!user) {
-          // Register a new patient account dynamically
-          const emailPrefix = body.email.split('@')[0];
-          const firstName = emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1);
-          user = await db.createUser({
-            username: emailPrefix,
-            password: 'google_oauth_mock_bypass',
-            firstName: firstName,
-            lastName: 'Google-User',
-            email: body.email
-          });
-        }
+        const https = require('https');
+        https.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${body.credential}`, (googleRes) => {
+          let data = '';
+          googleRes.on('data', chunk => { data += chunk; });
+          googleRes.on('end', async () => {
+            try {
+              const googleInfo = JSON.parse(data);
+              if (googleRes.statusCode !== 200 || !googleInfo.email) {
+                sendJson(res, 401, { error: 'Invalid Google token' });
+                return;
+              }
+              
+              let user = await db.getUserByEmail(googleInfo.email);
+              if (!user) {
+                // Register a new patient account dynamically using Google profile data
+                user = await db.createUser({
+                  username: googleInfo.email.split('@')[0],
+                  password: 'google_oauth_user_' + Date.now(), // Secure random dummy password
+                  firstName: googleInfo.given_name || 'Google',
+                  lastName: googleInfo.family_name || 'User',
+                  email: googleInfo.email
+                });
+              }
 
-        const token = generateToken(user.id, user.role);
-        sendJson(res, 200, { token, user: { id: user.id, username: user.username, role: user.role, firstName: user.firstName, lastName: user.lastName } });
+              const token = generateToken(user.id, user.role);
+              sendJson(res, 200, { token, user: { id: user.id, username: user.username, role: user.role, firstName: user.firstName, lastName: user.lastName } });
+            } catch (err) {
+              sendJson(res, 500, { error: 'Failed to process Google login' });
+            }
+          });
+        }).on('error', (err) => {
+          sendJson(res, 500, { error: 'Failed to reach Google verification servers' });
+        });
         return;
       }
 

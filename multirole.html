@@ -6,6 +6,7 @@
     <title>Santhéa Hospital - Unified Access Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="theme.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         
@@ -699,10 +700,23 @@
 
                 <div id="patientExtraBlock">
                     <div class="divider">or</div>
-                    <button type="button" class="btn-google" id="btnGoogle">
-                        <i class="fab fa-google"></i>
-                        <span>Sign in with Google</span>
-                    </button>
+                    
+                    <div id="g_id_onload"
+                         data-client_id="YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com"
+                         data-context="signin"
+                         data-ux_mode="popup"
+                         data-callback="handleGoogleLogin"
+                         data-auto_prompt="false">
+                    </div>
+                    <div class="g_id_signin"
+                         data-type="standard"
+                         data-shape="rectangular"
+                         data-theme="outline"
+                         data-text="signin_with"
+                         data-size="large"
+                         data-logo_alignment="left"
+                         style="display: flex; justify-content: center; margin-bottom: 20px;">
+                    </div>
                     
                     <div class="register-block">
                         Don't have an account? <a href="register.html">Register here</a>
@@ -712,95 +726,7 @@
         </div>
     </div>
 
-    <!-- GOOGLE ACCOUNT CHOOSER MODAL (Mock) -->
-    <style>
-        .google-acc-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 15px;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: background 0.2s;
-            text-align: left;
-            background: white;
-            border: 1px solid transparent;
-        }
-        .google-acc-item:hover {
-            background-color: #f8f9fa;
-            border-color: #e0e0e0;
-        }
-        #google-input-email:focus {
-            border-color: #1a73e8 !important;
-            box-shadow: 0 0 0 1px #1a73e8;
-        }
-    </style>
-    <div id="google-chooser-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:10000; align-items:center; justify-content:center; padding: 20px;">
-        <div style="background:white; border-radius:12px; width:100%; max-width:400px; padding:30px; box-shadow:0 4px 20px rgba(0,0,0,0.15); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif; text-align:center;">
-            <!-- Google Logo -->
-            <div style="margin-bottom:20px; font-weight:bold; font-size:1.5rem; letter-spacing:-1px; font-family:'Product Sans',Arial,sans-serif;">
-                <span style="color:#4285F4;">G</span><span style="color:#EA4335;">o</span><span style="color:#FBBC05;">o</span><span style="color:#4285F4;">g</span><span style="color:#34A853;">l</span><span style="color:#EA4335;">e</span>
-            </div>
-            
-            <!-- VIEW 1: ACCOUNTS LIST -->
-            <div id="google-accounts-view">
-                <h3 style="font-size:1.3rem; font-weight:400; color:#202124; margin-bottom:5px; font-family:sans-serif;">Choose an account</h3>
-                <p style="font-size:0.9rem; color:#5f6368; margin-bottom:25px; font-family:sans-serif;">to continue to Santhéa Hospital</p>
-                
-                <!-- Accounts List -->
-                <div style="display:flex; flex-direction:column; border-bottom:1px solid #e0e0e0; margin-bottom:15px; text-align:left; gap:2px;">
-                    <!-- Sarah -->
-                    <div class="google-acc-item" onclick="googleSelectAccount('sarah.j@gmail.com')">
-                        <div style="background:#e8f0fe; color:#1a73e8; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.1rem; font-family:sans-serif;">S</div>
-                        <div>
-                            <div style="font-weight:bold; font-size:0.88rem; color:#3c4043; font-family:sans-serif;">Sarah Johnson</div>
-                            <div style="font-size:0.78rem; color:#5f6368; font-family:sans-serif;">sarah.j@gmail.com</div>
-                        </div>
-                    </div>
-                    <!-- Manish -->
-                    <div class="google-acc-item" onclick="googleSelectAccount('manish@gmail.com')">
-                        <div style="background:#fce8e6; color:#c5221f; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.1rem; font-family:sans-serif;">M</div>
-                        <div>
-                            <div style="font-weight:bold; font-size:0.88rem; color:#3c4043; font-family:sans-serif;">Manish</div>
-                            <div style="font-size:0.78rem; color:#5f6368; font-family:sans-serif;">manish@gmail.com</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Other Option -->
-                <div style="display:flex; flex-direction:column; text-align:left; margin-bottom: 20px;">
-                    <div class="google-acc-item" onclick="googleUseOtherAccount()">
-                        <div style="color:#5f6368; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; border:1px solid #dadce0; text-align:center;"><i class="fas fa-user-circle"></i></div>
-                        <span style="font-weight:500; font-size:0.88rem; color:#3c4043; font-family:sans-serif; margin-left: 12px;">Use another account</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW 2: CUSTOM EMAIL INPUT -->
-            <div id="google-email-view" style="display:none; text-align:left;">
-                <div onclick="showGoogleAccountsView()" style="cursor:pointer; color:#5f6368; margin-bottom:15px; font-size:0.82rem; display:inline-flex; align-items:center; gap:6px; font-family:sans-serif; font-weight:500; padding:4px 8px; border-radius:4px; background:#f1f3f4;">
-                    <i class="fas fa-arrow-left" style="font-size: 0.75rem;"></i> Back to accounts
-                </div>
-                <h3 style="font-size:1.3rem; font-weight:400; color:#202124; margin-bottom:5px; font-family:sans-serif;">Sign in</h3>
-                <p style="font-size:0.9rem; color:#5f6368; margin-bottom:25px; font-family:sans-serif;">Use your Google Account</p>
-
-                <div style="position:relative; margin-bottom:20px;">
-                    <input type="email" id="google-input-email" placeholder="Email or phone" style="width:100%; padding:14px; border:1px solid #dadce0; border-radius:4px; font-size:0.95rem; outline:none; transition:border-color 0.2s; font-family:sans-serif;" required>
-                </div>
-                
-                <p style="font-size:0.75rem; color:#5f6368; margin-bottom:25px; font-family:sans-serif; line-height:1.4;">To continue, Google will share your name, email address, and profile picture with Santhéa Hospital.</p>
-
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
-                    <span style="color:#1a73e8; font-weight:bold; font-size:0.85rem; cursor:pointer; font-family:sans-serif;" onclick="showGoogleAccountsView()">Create account</span>
-                    <button type="button" onclick="googleSubmitCustomEmail()" style="background:#1a73e8; color:white; border:none; padding:10px 24px; border-radius:4px; font-size:0.88rem; font-weight:bold; cursor:pointer; transition: background 0.2s; font-family:sans-serif;">Next</button>
-                </div>
-            </div>
-            
-            <div style="margin-top:20px; display:flex; justify-content:flex-end; border-top: 1px solid #f1f3f4; padding-top: 10px;">
-                <button type="button" onclick="closeGoogleChooser()" style="border:none; background:none; color:#1a73e8; font-weight:bold; cursor:pointer; font-size:0.85rem; padding:8px 12px; border-radius:4px; font-family:sans-serif;">Cancel</button>
-            </div>
-        </div>
-    </div>
+    <!-- GOOGLE ACCOUNT CHOOSER (Removed Mock Modal) -->
 
     <script>
         // State Management
@@ -1094,38 +1020,31 @@
             submitLogin(username, password);
         });
 
-        // Mock Google Login Functionality
-        btnGoogle.addEventListener('click', function () {
-            document.getElementById('google-chooser-modal').style.display = 'flex';
-        });
-
-        window.closeGoogleChooser = function () {
-            document.getElementById('google-chooser-modal').style.display = 'none';
-        };
-
-        window.googleSelectAccount = async function (email) {
-            closeGoogleChooser();
+        // Real Google Login Callback
+        window.handleGoogleLogin = async function (response) {
+            const credential = response.credential;
             try {
-                const response = await fetch('/api/auth/google-login', {
+                const res = await fetch('/api/auth/google-login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
+                    body: JSON.stringify({ credential })
                 });
 
-                const result = await response.json();
-                if (response.ok) {
+                const result = await res.json();
+                if (res.ok) {
                     localStorage.setItem('token', result.token);
                     localStorage.setItem('user', JSON.stringify(result.user));
                     
                     alertContainer.innerHTML = `
                         <div class="alert-box" style="background-color: #ecfdf5; border-color: #a7f3d0; color: #065f46;">
                             <i class="fas fa-check-circle"></i>
-                            <div>Google login successful! Redirecting to Patient Portal...</div>
+                            <div>Google authentication verified! Redirecting...</div>
                         </div>
                     `;
                     
                     setTimeout(() => {
-                        window.location.href = 'paatient-dash.html';
+                        window.location.href = result.user.role === 'admin' ? 'admin-dash.html' : 
+                                               result.user.role === 'doctor' ? 'doctor-dasd.html' : 'paatient-dash.html';
                     }, 800);
                 } else {
                     showAlert('Google OAuth failed: ' + result.error);
@@ -1134,31 +1053,6 @@
                 console.error(err);
                 showAlert('Server connection error. Ensure backend is running.');
             }
-        };
-
-        window.googleUseOtherAccount = function () {
-            document.getElementById('google-accounts-view').style.display = 'none';
-            document.getElementById('google-email-view').style.display = 'block';
-            document.getElementById('google-input-email').value = '';
-            document.getElementById('google-input-email').focus();
-        };
-
-        window.showGoogleAccountsView = function () {
-            document.getElementById('google-email-view').style.display = 'none';
-            document.getElementById('google-accounts-view').style.display = 'block';
-        };
-
-        window.googleSubmitCustomEmail = function () {
-            const email = document.getElementById('google-input-email').value.trim();
-            if (!email) {
-                showAlert('Please enter your email address.');
-                return;
-            }
-            if (!email.includes('@') || !email.includes('.')) {
-                showAlert('Please enter a valid Google Mail address.');
-                return;
-            }
-            googleSelectAccount(email);
         };
 
         // Initialize portal on load
