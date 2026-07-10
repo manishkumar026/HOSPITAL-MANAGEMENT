@@ -477,6 +477,23 @@ const dbHelper = {
     return newRec;
   },
 
+  updateUserAvatar: async (id, avatar) => {
+    await getDb();
+    if (useJsonDb) {
+      const db = readJsonDb();
+      const user = db.users.find(u => u.id === id);
+      if (user) {
+        user.avatar = avatar;
+        writeJsonDb(db);
+        return user;
+      }
+      return null;
+    }
+    const db = await getDb();
+    await db.collection('users').updateOne({ id }, { $set: { avatar } });
+    return await db.collection('users').findOne({ id });
+  },
+
   deleteUser: async (id) => {
     await getDb();
     if (useJsonDb) {

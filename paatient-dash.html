@@ -40,6 +40,37 @@
             border: 3.5px solid var(--accent);
             box-shadow: 0 0 15px var(--accent-glow);
         }
+
+        /* Avatar upload wrapper */
+        .avatar-upload-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+        .avatar-upload-wrapper img {
+            display: block;
+            margin-bottom: 0;
+        }
+        .avatar-upload-overlay {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .avatar-upload-wrapper:hover .avatar-upload-overlay {
+            opacity: 1;
+        }
+        .avatar-upload-overlay i {
+            color: white;
+            font-size: 1.4rem;
+        }
+        #avatar-file-input { display: none; }
         
         .profile h3 {
             color: white;
@@ -469,7 +500,11 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="profile">
-                <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Patient" class="profile-img">
+                <div class="avatar-upload-wrapper" onclick="document.getElementById('avatar-file-input').click()" title="Click to change photo">
+                    <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Patient" class="profile-img" id="sidebar-avatar">
+                    <div class="avatar-upload-overlay"><i class="fas fa-camera"></i></div>
+                </div>
+                <input type="file" id="avatar-file-input" accept="image/*">
                 <h3>Sarah Johnson</h3>
                 <p>Patient ID: PA789456</p>
             </div>
@@ -726,15 +761,10 @@
             // Update sidebar profile card
             document.querySelector('.profile h3').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
             document.querySelector('.profile p').textContent = `Patient ID: ${currentUser.id}`;
-            
-            // Choose dynamic portrait based on gender/name
-            let avatarUrl = 'https://randomuser.me/api/portraits/women/65.jpg'; // default woman
-            if (currentUser.gender === 'male' || currentUser.firstName.toLowerCase() === 'manish' || currentUser.username.toLowerCase().includes('manish')) {
-                avatarUrl = 'https://randomuser.me/api/portraits/men/32.jpg'; // male avatar
-            }
-            
-            document.querySelector('.profile img').src = avatarUrl;
-            document.querySelector('.user-actions img').src = avatarUrl;
+
+            // Use saved avatar, or pick a default based on gender
+            let avatarUrl = currentUser.avatar || (currentUser.gender === 'male' ? 'https://randomuser.me/api/portraits/men/32.jpg' : 'https://randomuser.me/api/portraits/women/65.jpg');
+            setAllAvatars(avatarUrl);
             
             // Update header greetings
             document.querySelector('.page-title p').textContent = `Welcome back, ${currentUser.firstName}!`;
@@ -1073,6 +1103,41 @@
                 });
             }
         }
+
+        // ── Avatar Upload ──────────────────────────────────────
+        function setAllAvatars(url) {
+            document.querySelectorAll('#sidebar-avatar, .user-avatar-top').forEach(img => img.src = url);
+        }
+
+        document.getElementById('avatar-file-input').addEventListener('change', async function() {
+            const file = this.files[0];
+            if (!file) return;
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Please choose an image smaller than 2MB.');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const base64 = e.target.result;
+                setAllAvatars(base64); // instant preview
+                const token = localStorage.getItem('token');
+                try {
+                    const res = await fetch('/api/auth/avatar', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'auth-token': token },
+                        body: JSON.stringify({ avatar: base64 })
+                    });
+                    if (!res.ok) {
+                        const err = await res.json();
+                        alert('Upload failed: ' + (err.error || 'Unknown error'));
+                    }
+                } catch (err) {
+                    alert('Network error uploading avatar.');
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+        // ────────────────────────────────────────────────────────
 
         function showApptNote(btn) {
             const note = btn.getAttribute('data-note') || 'No details provided.';

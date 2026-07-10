@@ -328,6 +328,27 @@ const server = http.createServer(async (req, res) => {
         return;
       }
 
+      // Update Profile Avatar
+      if (pathname === '/api/auth/avatar' && req.method === 'POST') {
+        const body = await getJsonBody(req);
+        if (!body.avatar) {
+          sendJson(res, 400, { error: 'Missing avatar data' });
+          return;
+        }
+        // Limit size: base64 images should be under 2MB
+        if (body.avatar.length > 2 * 1024 * 1024 * 1.37) {
+          sendJson(res, 400, { error: 'Image too large. Please use an image smaller than 2MB.' });
+          return;
+        }
+        const updated = await db.updateUserAvatar(auth.userId, body.avatar);
+        if (updated) {
+          sendJson(res, 200, { message: 'Avatar updated successfully', avatar: body.avatar });
+        } else {
+          sendJson(res, 404, { error: 'User not found' });
+        }
+        return;
+      }
+
       // Get Doctors List
       if (pathname === '/api/users/doctors' && req.method === 'GET') {
         const doctors = (await db.getDoctors()).map(d => ({
