@@ -905,9 +905,6 @@
             // Clear mismatch or other notifications when shifting role
             alertContainer.innerHTML = '';
             
-            // Clear input fields when switching tabs
-            if (loginForm) loginForm.reset();
-            
             // Update Active Class on Tabs
             tabButtons.forEach(btn => {
                 const btnRole = btn.getAttribute('data-role');
@@ -1082,16 +1079,6 @@
                 btnText.textContent = 'Sign In';
             }
         }
-
-        // Auto-fill passwords for testing dummy accounts
-        usernameInput.addEventListener('input', function(e) {
-            const val = e.target.value.toLowerCase().trim();
-            if (val === 'admin') {
-                passwordInput.value = 'admin123';
-            } else if (['dr_chen', 'dr_patel', 'dr_johnson', 'dr_williams'].includes(val)) {
-                passwordInput.value = 'doctor123';
-            }
-        });
 
         // Form Submit listener
         loginForm.addEventListener('submit', function (e) {
