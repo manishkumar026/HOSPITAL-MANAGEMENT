@@ -922,7 +922,7 @@
                         <td>Dr. ${appt.doctorName}</td>
                         <td><span style="text-transform: capitalize;">${appt.department}</span></td>
                         <td><span class="status ${appt.status}">${appt.status}</span></td>
-                        <td><button class="btn btn-primary" onclick="alert('Reason: ${appt.message || \'No details provided.\'}')">View Note</button></td>
+                        <td><button class="btn btn-primary btn-sm" onclick="showApptNote(this)" data-note="${(appt.message || 'No details provided.').replace(/"/g, '&quot;')}">View Note</button></td>
                     `;
                     upcomingTbody.appendChild(tr);
                 });
@@ -1072,6 +1072,11 @@
                     list.appendChild(card);
                 });
             }
+        }
+
+        function showApptNote(btn) {
+            const note = btn.getAttribute('data-note') || 'No details provided.';
+            alert('Appointment Note:\n\n' + note);
         }
 
         function setupNavigation() {
